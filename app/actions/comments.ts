@@ -4,6 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { sendCommentReplyEmail } from "@/lib/email";
+import { syncUser } from "@/lib/user";
 
 async function createNotification({
   userId,
@@ -53,6 +54,9 @@ export async function createComment({
   if (!userId) {
     throw new Error("You must be signed in to comment");
   }
+
+  // Sync user to database if not already synced
+  await syncUser();
 
   if (!content || content.trim().length === 0) {
     throw new Error("Comment cannot be empty");
