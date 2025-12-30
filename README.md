@@ -73,14 +73,29 @@ YOUTUBE_GOLF_PLAYLIST_ID=your_golf_playlist_id
 4. **Setup the database**
 
 ```bash
-# Push the Prisma schema to your database
-npm run db:push
-
 # Generate Prisma Client
-npm run db:generate
+npx prisma generate
+
+# Push the Prisma schema to your database
+npx prisma db push
 ```
 
-5. **Run the development server**
+5. **Sync course data**
+
+Perform an initial sync to populate the course database:
+
+```bash
+# Start the development server
+npm run dev
+
+# In a separate terminal or browser, trigger the course sync
+curl http://localhost:3000/api/sync/courses-csv
+
+# Or visit in your browser:
+# http://localhost:3000/api/sync/courses-csv
+```
+
+6. **Run the development server**
 
 ```bash
 npm run dev
@@ -143,6 +158,8 @@ npm run start
 The application uses the following main models:
 
 - **Course**: GSPro courses with metadata
+  - CSV fields: `server`, `location`, `version`, `tourStop`, `majorVenue`, `historic`
+  - Indexed fields for fast filtering: designer, tourStop, majorVenue, historic
 - **YouTubeVideo**: Synced YouTube videos
 - **Resource**: Community resources and equipment
 - **User**: User accounts (synced with Clerk)
@@ -155,25 +172,63 @@ See `prisma/schema.prisma` for the complete schema.
 ## API Routes
 
 - `GET /api/courses` - List courses with filters and pagination
-- `GET /api/courses/[id]` - Get course details
+  - Query params: `search`, `designer`, `tourStop`, `majorVenue`, `historic`, `page`, `limit`
+- `GET /api/courses/[slug]` - Get course details by slug
 - `GET /api/videos` - List YouTube videos
 - `GET /api/resources` - List resources
 - `POST /api/favorites` - Add course to favorites
 - `DELETE /api/favorites/[id]` - Remove from favorites
-- `POST /api/sync/courses` - Trigger course sync (admin)
+- `GET|POST /api/sync/courses-csv` - Trigger CSV course sync (manual/scheduled)
 - `POST /api/sync/videos` - Trigger video sync (admin)
 
 ## Data Synchronization
 
 The app syncs data from external sources:
 
-- **Courses**: Scraped from [Pakman Studios](https://pakmanstudios.com/gspro-course-list/)
-- **Videos**: Fetched from YouTube Data API
+- **Courses**: Downloaded from [Pakman Studios CSV](https://pakmanstudios.com/wp-content/uploads/gspro-course-list.csv)
+  - Fields: Server, Name, Location, Designer, Version, Updated, TourStop, Major Venue, Historic
+  - Smart sync: Only updates courses with actual changes (version, dates, or flags)
+  - Stores all data in PostgreSQL for fast queries and filtering
+- **Videos**: Fetched from YouTube Data API (Eagles & Birdies playlist)
 
-Sync jobs run:
-- Daily at 3 AM UTC (courses)
-- Daily at 4 AM UTC (videos)
-- Manual trigger via admin panel
+### Course Sync Process
+
+The course sync system (`lib/scrapers/csv-sync.ts`):
+1. Downloads the latest CSV from Pakman Studios
+2. Parses the CSV data
+3. Compares with existing database records
+4. Only updates courses that have changed
+5. Returns statistics: added, updated, unchanged counts
+
+### Sync Schedule
+
+Recommended sync schedule:
+- **Courses**: Daily (via scheduled function or cron job)
+- **Videos**: Daily or weekly
+- **Manual**: Trigger anytime via `/api/sync/courses-csv`
+
+For Netlify deployment, set up a scheduled function:
+
+```javascript
+// netlify/functions/scheduled-course-sync.js
+export async function handler(event, context) {
+  const response = await fetch(`${process.env.URL}/api/sync/courses-csv`, {
+    method: 'POST'
+  });
+  const data = await response.json();
+  return {
+    statusCode: 200,
+    body: JSON.stringify(data)
+  };
+}
+```
+
+Configure in `netlify.toml`:
+```toml
+[[functions]]
+  name = "scheduled-course-sync"
+  schedule = "0 3 * * *"  # Daily at 3 AM UTC
+```
 
 ## Contributing
 
