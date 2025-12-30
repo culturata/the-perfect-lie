@@ -151,7 +151,7 @@ export function CourseTable({ courses }: CourseTableProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Filters */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-1 relative">
@@ -160,12 +160,12 @@ export function CourseTable({ courses }: CourseTableProps) {
             placeholder="Search courses, designers, locations..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="pl-10 h-11"
           />
         </div>
 
         <Select value={designerFilter} onValueChange={setDesignerFilter}>
-          <SelectTrigger className="w-full md:w-[200px]">
+          <SelectTrigger className="w-full md:w-[220px] h-11">
             <Filter className="mr-2 h-4 w-4" />
             <SelectValue placeholder="Designer" />
           </SelectTrigger>
@@ -180,7 +180,7 @@ export function CourseTable({ courses }: CourseTableProps) {
         </Select>
 
         <Select value={tagFilter} onValueChange={setTagFilter}>
-          <SelectTrigger className="w-full md:w-[180px]">
+          <SelectTrigger className="w-full md:w-[200px] h-11">
             <Filter className="mr-2 h-4 w-4" />
             <SelectValue placeholder="Filter" />
           </SelectTrigger>
@@ -194,51 +194,51 @@ export function CourseTable({ courses }: CourseTableProps) {
       </div>
 
       {/* Results count */}
-      <div className="text-sm text-muted-foreground">
+      <div className="text-sm text-muted-foreground font-medium">
         Showing {filteredAndSortedCourses.length} of {courses.length} courses
       </div>
 
       {/* Table */}
-      <div className="border rounded-lg">
+      <div className="border rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>
+            <TableRow className="bg-muted/50">
+              <TableHead className="h-14">
                 <Button
                   variant="ghost"
                   onClick={() => handleSort("name")}
-                  className="hover:bg-transparent p-0 h-auto font-semibold"
+                  className="hover:bg-transparent p-0 h-auto font-semibold text-foreground"
                 >
                   Course Name
                   <SortIcon field="name" />
                 </Button>
               </TableHead>
-              <TableHead className="hidden md:table-cell">
+              <TableHead className="hidden md:table-cell h-14">
                 <Button
                   variant="ghost"
                   onClick={() => handleSort("designer")}
-                  className="hover:bg-transparent p-0 h-auto font-semibold"
+                  className="hover:bg-transparent p-0 h-auto font-semibold text-foreground"
                 >
                   Designer
                   <SortIcon field="designer" />
                 </Button>
               </TableHead>
-              <TableHead className="hidden lg:table-cell">
+              <TableHead className="hidden lg:table-cell h-14">
                 <Button
                   variant="ghost"
                   onClick={() => handleSort("location")}
-                  className="hover:bg-transparent p-0 h-auto font-semibold"
+                  className="hover:bg-transparent p-0 h-auto font-semibold text-foreground"
                 >
                   Location
                   <SortIcon field="location" />
                 </Button>
               </TableHead>
-              <TableHead className="hidden xl:table-cell">Tags</TableHead>
-              <TableHead>
+              <TableHead className="hidden xl:table-cell h-14 font-semibold text-foreground">Tags</TableHead>
+              <TableHead className="h-14">
                 <Button
                   variant="ghost"
                   onClick={() => handleSort("lastUpdated")}
-                  className="hover:bg-transparent p-0 h-auto font-semibold"
+                  className="hover:bg-transparent p-0 h-auto font-semibold text-foreground"
                 >
                   Updated
                   <SortIcon field="lastUpdated" />
@@ -258,20 +258,20 @@ export function CourseTable({ courses }: CourseTableProps) {
               });
 
               return (
-                <TableRow key={course.id} className="cursor-pointer hover:bg-muted/50">
-                  <TableCell>
+                <TableRow key={course.id} className="cursor-pointer hover:bg-muted/50 transition-colors">
+                  <TableCell className="py-4">
                     <Link
                       href={`/courses/${slug}`}
-                      className="font-medium hover:text-primary hover:underline"
+                      className="font-medium hover:text-primary hover:underline transition-colors"
                     >
                       {course.name}
                     </Link>
                   </TableCell>
-                  <TableCell className="hidden md:table-cell">
+                  <TableCell className="hidden md:table-cell py-4">
                     {course.designer ? (
                       <Link
                         href={`/designers/${encodeURIComponent(course.designer)}`}
-                        className="text-muted-foreground hover:text-primary hover:underline"
+                        className="text-muted-foreground hover:text-primary hover:underline transition-colors"
                         onClick={(e) => e.stopPropagation()}
                       >
                         {course.designer}
@@ -280,29 +280,29 @@ export function CourseTable({ courses }: CourseTableProps) {
                       <span className="text-muted-foreground">—</span>
                     )}
                   </TableCell>
-                  <TableCell className="hidden lg:table-cell text-muted-foreground">
+                  <TableCell className="hidden lg:table-cell text-muted-foreground py-4">
                     {course.location || "—"}
                   </TableCell>
-                  <TableCell className="hidden xl:table-cell">
-                    <div className="flex flex-wrap gap-1">
+                  <TableCell className="hidden xl:table-cell py-4">
+                    <div className="flex flex-wrap gap-2">
                       {course.tourStop && (
-                        <Badge variant="default" className="text-xs">
+                        <Badge variant="default" className="text-xs px-2 py-0.5">
                           Tour
                         </Badge>
                       )}
                       {course.majorVenue && (
-                        <Badge variant="default" className="text-xs">
+                        <Badge variant="default" className="text-xs px-2 py-0.5">
                           Major
                         </Badge>
                       )}
                       {course.historic && (
-                        <Badge variant="secondary" className="text-xs">
+                        <Badge variant="secondary" className="text-xs px-2 py-0.5">
                           Historic
                         </Badge>
                       )}
                     </div>
                   </TableCell>
-                  <TableCell className="text-muted-foreground text-sm">
+                  <TableCell className="text-muted-foreground text-sm py-4">
                     {updateDate}
                   </TableCell>
                 </TableRow>
@@ -313,8 +313,8 @@ export function CourseTable({ courses }: CourseTableProps) {
       </div>
 
       {filteredAndSortedCourses.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground">
-          No courses found matching your filters.
+        <div className="text-center py-16 text-muted-foreground border rounded-lg">
+          <p className="text-base">No courses found matching your filters.</p>
         </div>
       )}
     </div>
