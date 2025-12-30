@@ -3,6 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { syncUser } from "@/lib/user";
 
 export async function getNotifications() {
   const { userId } = await auth();
@@ -10,6 +11,9 @@ export async function getNotifications() {
   if (!userId) {
     return [];
   }
+
+  // Sync user to database if not already synced
+  await syncUser();
 
   try {
     const notifications = await db.notification.findMany({
@@ -91,6 +95,9 @@ export async function getUnreadNotificationCount() {
     return 0;
   }
 
+  // Sync user to database if not already synced
+  await syncUser();
+
   try {
     const count = await db.notification.count({
       where: {
@@ -112,6 +119,9 @@ export async function getUserPreferences() {
   if (!userId) {
     throw new Error("Unauthorized");
   }
+
+  // Sync user to database if not already synced
+  await syncUser();
 
   try {
     let preferences = await db.userPreferences.findUnique({
@@ -146,6 +156,9 @@ export async function updateUserPreferences({
   if (!userId) {
     throw new Error("Unauthorized");
   }
+
+  // Sync user to database if not already synced
+  await syncUser();
 
   try {
     // Ensure user preferences exist

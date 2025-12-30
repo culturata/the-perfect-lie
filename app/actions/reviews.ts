@@ -3,6 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { syncUser } from "@/lib/user";
 
 export async function createReview({
   courseId,
@@ -20,6 +21,9 @@ export async function createReview({
   if (!userId) {
     throw new Error("You must be signed in to leave a review");
   }
+
+  // Sync user to database if not already synced
+  await syncUser();
 
   if (rating < 1 || rating > 5) {
     throw new Error("Rating must be between 1 and 5");
