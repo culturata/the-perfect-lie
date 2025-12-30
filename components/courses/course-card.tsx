@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Download, User, Calendar, Eye } from "lucide-react";
 
 interface CourseCardProps {
   name: string;
@@ -22,39 +24,55 @@ export function CourseCard({
     day: "numeric",
   });
 
+  // Create slug from course name
+  const slug = encodeURIComponent(name.toLowerCase().replace(/\s+/g, "-"));
+
   return (
-    <Card className="hover:shadow-lg transition-shadow">
+    <Card className="hover:shadow-lg transition-all hover:border-primary/50 border-2 group">
       <CardHeader>
-        <div className="flex items-start justify-between gap-2">
-          <CardTitle className="line-clamp-2 text-lg">
+        <Link href={`/courses/${slug}`} className="space-y-2">
+          <CardTitle className="line-clamp-2 text-lg group-hover:text-primary transition-colors">
             {name}
           </CardTitle>
-        </div>
-        <CardDescription className="flex items-center gap-2">
-          {designer && (
-            <>
-              <span className="text-sm">by {designer}</span>
-              <span>•</span>
-            </>
-          )}
-          <span className="text-xs">Updated {updateDate}</span>
-        </CardDescription>
+          <CardDescription className="flex flex-col gap-1">
+            {designer && (
+              <div className="flex items-center gap-1.5 text-xs">
+                <User className="w-3 h-3" />
+                <span>{designer}</span>
+              </div>
+            )}
+            <div className="flex items-center gap-1.5 text-xs">
+              <Calendar className="w-3 h-3" />
+              <span>{updateDate}</span>
+            </div>
+          </CardDescription>
+        </Link>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="flex flex-col gap-3">
         <div className="flex items-center gap-2">
           <Badge variant="secondary" className="text-xs">
             GSPro
           </Badge>
         </div>
-        <Button asChild className="w-full">
-          <a
-            href={downloadUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Download Course
-          </a>
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" className="flex-1" asChild>
+            <Link href={`/courses/${slug}`}>
+              <Eye className="w-3 h-3 mr-1" />
+              View
+            </Link>
+          </Button>
+          <Button size="sm" className="flex-1" asChild>
+            <a
+              href={downloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Download className="w-3 h-3 mr-1" />
+              Download
+            </a>
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
