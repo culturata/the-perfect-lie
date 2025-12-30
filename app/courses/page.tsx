@@ -25,8 +25,8 @@ export default async function CoursesPage() {
   }
 
   return (
-    <div className="container py-12 md:py-16">
-      <div className="max-w-6xl mx-auto space-y-8">
+    <div className="container px-4 md:px-6 py-12 md:py-16">
+      <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="space-y-4">
           <div className="flex items-center gap-2">

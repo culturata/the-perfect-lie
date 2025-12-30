@@ -14,8 +14,8 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="container py-16 md:py-24">
-        <div className="flex flex-col items-center gap-4 text-center">
+      <section className="container px-4 md:px-6 py-16 md:py-24">
+        <div className="flex flex-col items-center gap-4 text-center max-w-4xl mx-auto">
           <Badge variant="secondary">
             <Users className="w-3 h-3 mr-1" />
             GSPro Community Hub
@@ -66,8 +66,8 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="container py-16 md:py-24">
-        <div className="text-center mb-12">
+      <section className="container px-4 md:px-6 py-16 md:py-24">
+        <div className="text-center mb-12 max-w-3xl mx-auto">
           <Badge variant="secondary" className="mb-4">Features</Badge>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
             Everything You Need
@@ -77,7 +77,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
           <Card className="border-2 hover:border-primary/50 transition-all hover:shadow-lg">
             <CardHeader>
               <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
@@ -155,8 +155,8 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="container py-16 md:py-24">
-        <div className="flex flex-col items-center gap-4 text-center max-w-2xl mx-auto">
+      <section className="container px-4 md:px-6 py-16 md:py-24">
+        <div className="flex flex-col items-center gap-4 text-center max-w-3xl mx-auto">
           <Badge variant="secondary">
             <Star className="w-3 h-3 mr-1" />
             Join the Community
