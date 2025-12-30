@@ -1,8 +1,7 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { db } from "@/lib/db";
-import { Download, Calendar, User, MapPin, Star } from "lucide-react";
+import { Calendar, User, MapPin, Star } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -24,9 +23,15 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
   // Fetch course from database by matching the slug
   let course = null;
+  let videos = [];
+
   try {
     // Get all courses and find the one that matches the slug
-    const courses = await db.course.findMany();
+    const courses = await db.course.findMany({
+      include: {
+        videos: true, // Include linked flyover videos
+      },
+    });
 
     // Find course by slug (URL-encoded name)
     course = courses.find(
@@ -36,6 +41,8 @@ export default async function CoursePage({ params }: CoursePageProps) {
     if (!course) {
       notFound();
     }
+
+    videos = course.videos || [];
   } catch (error) {
     console.error("Error loading course:", error);
     notFound();
@@ -60,29 +67,24 @@ export default async function CoursePage({ params }: CoursePageProps) {
           </Link>
 
           <div className="space-y-4">
-            <div className="flex items-start justify-between gap-4">
-              <div className="space-y-2 flex-1">
-                <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-                  {course.name}
-                </h1>
-                {course.designer && (
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <User className="w-4 h-4" />
-                    <span>Designed by {course.designer}</span>
-                  </div>
-                )}
-              </div>
-
-              <Button size="lg" asChild>
-                <a
-                  href={course.downloadUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  Download
-                </a>
-              </Button>
+            <div className="space-y-2">
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+                {course.name}
+              </h1>
+              {course.designer && (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <User className="w-4 h-4" />
+                  <span>
+                    Designed by{" "}
+                    <Link
+                      href={`/designers/${encodeURIComponent(course.designer)}`}
+                      className="text-primary hover:underline font-medium"
+                    >
+                      {course.designer}
+                    </Link>
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
@@ -123,53 +125,69 @@ export default async function CoursePage({ params }: CoursePageProps) {
         </Card>
 
         {/* Course Details */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Course Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Course Information</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <div className="flex justify-between">
+                <div className="flex flex-col gap-1">
                   <span className="text-sm text-muted-foreground">Name</span>
                   <span className="text-sm font-medium">{course.name}</span>
                 </div>
                 {course.designer && (
-                  <div className="flex justify-between">
+                  <div className="flex flex-col gap-1">
                     <span className="text-sm text-muted-foreground">Designer</span>
-                    <span className="text-sm font-medium">{course.designer}</span>
+                    <Link
+                      href={`/designers/${encodeURIComponent(course.designer)}`}
+                      className="text-sm font-medium text-primary hover:underline"
+                    >
+                      {course.designer}
+                    </Link>
                   </div>
                 )}
-                <div className="flex justify-between">
+                {course.location && (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-sm text-muted-foreground">Location</span>
+                    <span className="text-sm font-medium">{course.location}</span>
+                  </div>
+                )}
+              </div>
+              <div className="space-y-2">
+                <div className="flex flex-col gap-1">
                   <span className="text-sm text-muted-foreground">Last Updated</span>
                   <span className="text-sm font-medium">{updateDate}</span>
                 </div>
+                {course.version && (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-sm text-muted-foreground">Version</span>
+                    <span className="text-sm font-medium">{course.version}</span>
+                  </div>
+                )}
+                {course.server && (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-sm text-muted-foreground">Server</span>
+                    <span className="text-sm font-medium">{course.server}</span>
+                  </div>
+                )}
               </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Download</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                This course is hosted on Google Drive. Click the download button to
-                access the course files.
-              </p>
-              <Button className="w-full" asChild>
-                <a
-                  href={course.downloadUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  Download Course
-                </a>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+            {/* Course Badges */}
+            <div className="flex flex-wrap gap-2 pt-2">
+              {course.tourStop && (
+                <Badge variant="default">Tour Stop</Badge>
+              )}
+              {course.majorVenue && (
+                <Badge variant="default">Major Venue</Badge>
+              )}
+              {course.historic && (
+                <Badge variant="secondary">Historic</Badge>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Reviews Section - Coming Soon */}
         <Card>
@@ -194,19 +212,56 @@ export default async function CoursePage({ params }: CoursePageProps) {
         {/* Related Videos */}
         <Card>
           <CardHeader>
-            <CardTitle>Related Flyover Videos</CardTitle>
+            <CardTitle>Flyover Videos</CardTitle>
             <CardDescription>
-              Watch video tours of this course
+              {videos.length > 0
+                ? "Watch video tours of this course"
+                : "No flyover videos available yet"}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground text-center py-8">
-              Check the{" "}
-              <Link href="/flyovers" className="text-primary hover:underline">
-                Flyovers
-              </Link>{" "}
-              page to see if there's a video tour available
-            </p>
+            {videos.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {videos.map((video) => (
+                  <a
+                    key={video.id}
+                    href={`https://www.youtube.com/watch?v=${video.videoId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block rounded-lg overflow-hidden border hover:border-primary transition-colors"
+                  >
+                    <div className="relative aspect-video bg-muted">
+                      <img
+                        src={video.thumbnailUrl}
+                        alt={video.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                        <div className="w-16 h-16 rounded-full bg-red-600 flex items-center justify-center">
+                          <div className="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-white border-b-8 border-b-transparent ml-1"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-3 bg-card">
+                      <h4 className="font-medium text-sm line-clamp-2 group-hover:text-primary transition-colors">
+                        {video.title}
+                      </h4>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {video.channelTitle}
+                      </p>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground text-center py-8">
+                No flyover videos have been linked to this course yet. Check the{" "}
+                <Link href="/flyovers" className="text-primary hover:underline">
+                  Flyovers
+                </Link>{" "}
+                page to see all available videos.
+              </p>
+            )}
           </CardContent>
         </Card>
       </div>
