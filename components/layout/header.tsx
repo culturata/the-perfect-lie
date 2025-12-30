@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
+import { NotificationBell } from "@/components/notifications/notification-bell";
 
 export function Header() {
   return (
@@ -50,6 +51,7 @@ export function Header() {
             <Button variant="ghost" size="sm" className="hidden md:inline-flex" asChild>
               <Link href="/dashboard">Dashboard</Link>
             </Button>
+            <NotificationBell />
             <UserButton afterSignOutUrl="/" />
           </SignedIn>
         </div>

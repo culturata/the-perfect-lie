@@ -39,6 +39,7 @@ model Course {
   favorites Favorite[]
   reviews   Review[]
   videos    YouTubeVideo[] // Flyover videos for this course
+  comments  Comment[] // Comments on this course
 
   // Metadata
   createdAt DateTime @default(now())
@@ -116,10 +117,29 @@ model User {
   avatarUrl String?
 
   // Relationships
-  favorites Favorite[]
-  reviews   Review[]
+  favorites            Favorite[]
+  reviews              Review[]
+  comments             Comment[]
+  notifications        Notification[]        @relation("NotificationReceiver")
+  triggeredNotifications Notification[]      @relation("NotificationTriggerer")
+  preferences          UserPreferences?
 
   // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserPreferences {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  // Email notification settings
+  emailOnReply       Boolean @default(true)
+  emailOnMention     Boolean @default(true)
+  emailDigest        Boolean @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -143,7 +163,11 @@ model Review {
   userId   String
   courseId String
   rating   Int // 1-5
-  comment  String? @db.Text
+  title    String? // Optional review title
+  content  String? @db.Text // Review text
+
+  // Helpful votes
+  helpfulCount Int @default(0)
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -153,6 +177,67 @@ model Review {
 
   @@unique([userId, courseId])
   @@index([courseId])
+  @@index([rating])
+}
+
+model Comment {
+  id       String  @id @default(cuid())
+  userId   String
+  courseId String
+  content  String  @db.Text
+
+  // Threading support
+  parentId String?
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  Comment[] @relation("CommentReplies")
+
+  // Metadata
+  isEdited Boolean @default(false)
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+  @@index([userId])
+  @@index([parentId])
+}
+
+model Notification {
+  id     String           @id @default(cuid())
+  userId String // User who receives the notification
+  type   NotificationType
+
+  // Notification content
+  title   String
+  message String
+
+  // Related entities
+  courseId  String?
+  commentId String?
+  reviewId  String?
+
+  // Notification metadata
+  isRead      Boolean  @default(false)
+  triggeredBy String? // User ID who triggered the notification
+
+  // Relationships
+  user      User  @relation("NotificationReceiver", fields: [userId], references: [id], onDelete: Cascade)
+  triggerer User? @relation("NotificationTriggerer", fields: [triggeredBy], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+  @@index([createdAt])
+}
+
+enum NotificationType {
+  COMMENT_REPLY
+  REVIEW_REPLY
+  MENTION
+  COURSE_UPDATE
 }
 
 model SyncLog {
