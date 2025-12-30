@@ -513,7 +513,7 @@ Create new resource
 **Source**: YouTube Data API v3
 
 **Required Playlist IDs**:
-- Eagles & Birdies Flyovers: `[TO BE PROVIDED]`
+- Eagles & Birdies Flyovers: `PLEKTcA5lfrkyDvi4zRCO1CKDFzXIL8xd0`
 - Golf Videos: `[TO BE PROVIDED]`
 
 **Process**:
@@ -533,7 +533,7 @@ Create new resource
 ### Environment Variables Needed
 ```
 YOUTUBE_API_KEY=
-YOUTUBE_FLYOVERS_PLAYLIST_ID=
+YOUTUBE_FLYOVERS_PLAYLIST_ID=PLEKTcA5lfrkyDvi4zRCO1CKDFzXIL8xd0
 YOUTUBE_GOLF_PLAYLIST_ID=
 ```
 
