@@ -4,21 +4,19 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, User, Calendar, Eye } from "lucide-react";
+import { User, Calendar, Eye } from "lucide-react";
 
 interface CourseCardProps {
   name: string;
   designer: string | null;
   dateAdded: string;
   lastUpdated: string;
-  downloadUrl: string;
 }
 
 export function CourseCard({
   name,
   designer,
   lastUpdated,
-  downloadUrl,
 }: CourseCardProps) {
   const updateDate = new Date(lastUpdated).toLocaleDateString("en-US", {
     year: "numeric",
@@ -56,25 +54,12 @@ export function CourseCard({
             GSPro
           </Badge>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="flex-1" asChild>
-            <Link href={`/courses/${slug}`}>
-              <Eye className="w-3 h-3 mr-1" />
-              View
-            </Link>
-          </Button>
-          <Button size="sm" className="flex-1" asChild>
-            <a
-              href={downloadUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Download className="w-3 h-3 mr-1" />
-              Download
-            </a>
-          </Button>
-        </div>
+        <Button size="sm" className="w-full" asChild>
+          <Link href={`/courses/${slug}`}>
+            <Eye className="w-3 h-3 mr-1" />
+            View Details
+          </Link>
+        </Button>
       </CardContent>
     </Card>
   );

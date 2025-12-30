@@ -72,7 +72,6 @@ export default async function CoursesPage() {
                   designer={course.designer}
                   dateAdded={course.dateAdded.toISOString()}
                   lastUpdated={course.lastUpdated.toISOString()}
-                  downloadUrl={course.downloadUrl}
                 />
               ))}
             </div>
@@ -81,12 +80,12 @@ export default async function CoursesPage() {
               <p>
                 Showing {courses.length} of {total} courses • Data from{" "}
                 <a
-                  href="https://pakmanstudios.com/gspro-course-list/"
+                  href="https://pakgolfstudios.com/gspro-course-list/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"
                 >
-                  Pakman Studios
+                  PakGolf Studios
                 </a>
               </p>
               <p className="mt-2 text-xs">

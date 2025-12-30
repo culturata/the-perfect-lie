@@ -1,8 +1,7 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { db } from "@/lib/db";
-import { Download, Calendar, User, MapPin, Star } from "lucide-react";
+import { Calendar, User, MapPin, Star } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -60,29 +59,16 @@ export default async function CoursePage({ params }: CoursePageProps) {
           </Link>
 
           <div className="space-y-4">
-            <div className="flex items-start justify-between gap-4">
-              <div className="space-y-2 flex-1">
-                <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-                  {course.name}
-                </h1>
-                {course.designer && (
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <User className="w-4 h-4" />
-                    <span>Designed by {course.designer}</span>
-                  </div>
-                )}
-              </div>
-
-              <Button size="lg" asChild>
-                <a
-                  href={course.downloadUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  Download
-                </a>
-              </Button>
+            <div className="space-y-2">
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+                {course.name}
+              </h1>
+              {course.designer && (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <User className="w-4 h-4" />
+                  <span>Designed by {course.designer}</span>
+                </div>
+              )}
             </div>
 
             <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
@@ -123,53 +109,64 @@ export default async function CoursePage({ params }: CoursePageProps) {
         </Card>
 
         {/* Course Details */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Course Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Course Information</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <div className="flex justify-between">
+                <div className="flex flex-col gap-1">
                   <span className="text-sm text-muted-foreground">Name</span>
                   <span className="text-sm font-medium">{course.name}</span>
                 </div>
                 {course.designer && (
-                  <div className="flex justify-between">
+                  <div className="flex flex-col gap-1">
                     <span className="text-sm text-muted-foreground">Designer</span>
                     <span className="text-sm font-medium">{course.designer}</span>
                   </div>
                 )}
-                <div className="flex justify-between">
+                {course.location && (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-sm text-muted-foreground">Location</span>
+                    <span className="text-sm font-medium">{course.location}</span>
+                  </div>
+                )}
+              </div>
+              <div className="space-y-2">
+                <div className="flex flex-col gap-1">
                   <span className="text-sm text-muted-foreground">Last Updated</span>
                   <span className="text-sm font-medium">{updateDate}</span>
                 </div>
+                {course.version && (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-sm text-muted-foreground">Version</span>
+                    <span className="text-sm font-medium">{course.version}</span>
+                  </div>
+                )}
+                {course.server && (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-sm text-muted-foreground">Server</span>
+                    <span className="text-sm font-medium">{course.server}</span>
+                  </div>
+                )}
               </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Download</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                This course is hosted on Google Drive. Click the download button to
-                access the course files.
-              </p>
-              <Button className="w-full" asChild>
-                <a
-                  href={course.downloadUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  Download Course
-                </a>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+            {/* Course Badges */}
+            <div className="flex flex-wrap gap-2 pt-2">
+              {course.tourStop && (
+                <Badge variant="default">Tour Stop</Badge>
+              )}
+              {course.majorVenue && (
+                <Badge variant="default">Major Venue</Badge>
+              )}
+              {course.historic && (
+                <Badge variant="secondary">Historic</Badge>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Reviews Section - Coming Soon */}
         <Card>
