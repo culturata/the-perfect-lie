@@ -82,8 +82,9 @@ npx prisma db push
 
 5. **Sync course data**
 
-Perform an initial sync to populate the course database:
+The app supports both remote and local CSV files for course data.
 
+**Option A: Use Remote CSV (Default)**
 ```bash
 # Start the development server
 npm run dev
@@ -94,6 +95,18 @@ curl http://localhost:3000/api/sync/courses-csv
 # Or visit in your browser:
 # http://localhost:3000/api/sync/courses-csv
 ```
+
+**Option B: Use Local CSV File (Recommended)**
+
+If the remote CSV URL is unavailable:
+
+1. Download the CSV from [PakGolf Studios](https://pakgolfstudios.com/gspro-course-list/)
+2. Save it as `/public/data/gspro-course-list.csv`
+3. Add to `.env.local`:
+   ```bash
+   COURSE_CSV_URL=/data/gspro-course-list.csv
+   ```
+4. Run the sync as shown above
 
 6. **Run the development server**
 
