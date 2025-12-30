@@ -1,6 +1,7 @@
 /**
- * Pakman Studios Course List Scraper
- * Scrapes course data from https://pakmanstudios.com/gspro-course-list/
+ * PakGolf Studios Course List Scraper
+ * Scrapes course data from https://pakgolfstudios.com/gspro-course-list/
+ * (formerly Pakman Studios)
  */
 
 import * as cheerio from "cheerio";
@@ -14,14 +15,14 @@ export interface ScrapedCourse {
   sourceUrl: string;
 }
 
-const PAKMAN_URL = "https://pakmanstudios.com/gspro-course-list/";
+const PAKMAN_URL = "https://pakgolfstudios.com/gspro-course-list/";
 
 /**
- * Scrape courses from Pakman Studios
+ * Scrape courses from PakGolf Studios
  */
 export async function scrapePakmanCourses(): Promise<ScrapedCourse[]> {
   try {
-    console.log("Fetching Pakman Studios course list...");
+    console.log("Fetching PakGolf Studios course list...");
 
     const response = await fetch(PAKMAN_URL, {
       headers: {
@@ -41,7 +42,7 @@ export async function scrapePakmanCourses(): Promise<ScrapedCourse[]> {
     const courses: ScrapedCourse[] = [];
 
     // Find the table containing courses
-    // Pakman Studios uses a table with course data
+    // PakGolf Studios uses a table with course data
     $("table tbody tr").each((index, element) => {
       try {
         const $row = $(element);
@@ -80,10 +81,10 @@ export async function scrapePakmanCourses(): Promise<ScrapedCourse[]> {
       }
     });
 
-    console.log(`Scraped ${courses.length} courses from Pakman Studios`);
+    console.log(`Scraped ${courses.length} courses from PakGolf Studios`);
     return courses;
   } catch (error) {
-    console.error("Error scraping Pakman Studios:", error);
+    console.error("Error scraping PakGolf Studios:", error);
     throw error;
   }
 }

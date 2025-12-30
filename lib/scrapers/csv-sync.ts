@@ -1,12 +1,13 @@
 /**
- * Pakman Studios CSV Course Sync
+ * PakGolf Studios CSV Course Sync
  * Downloads and parses course data from CSV file
+ * (formerly Pakman Studios)
  */
 
 import { db } from "@/lib/db";
 
-// CSV URL from Pakman Studios
-const CSV_URL = "https://pakmanstudios.com/wp-content/uploads/gspro-course-list.csv";
+// CSV URL from PakGolf Studios
+const CSV_URL = "https://pakgolfstudios.com/wp-content/uploads/gspro-course-list.csv";
 
 export interface CSVCourse {
   server: string;
@@ -22,11 +23,11 @@ export interface CSVCourse {
 }
 
 /**
- * Download and parse CSV from Pakman Studios
+ * Download and parse CSV from PakGolf Studios
  */
 export async function downloadCoursesCSV(): Promise<CSVCourse[]> {
   try {
-    console.log("Downloading courses CSV from Pakman Studios...");
+    console.log("Downloading courses CSV from PakGolf Studios...");
 
     const response = await fetch(CSV_URL, {
       headers: {
