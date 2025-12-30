@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { CourseCard } from "@/components/courses/course-card";
+import { CourseTable } from "@/components/courses/course-table";
 import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -10,11 +10,10 @@ export default async function CoursesPage() {
   let total = 0;
 
   try {
-    // Fetch courses from database
+    // Fetch all courses from database
     total = await db.course.count();
     courses = await db.course.findMany({
       orderBy: { lastUpdated: "desc" },
-      take: 24,
     });
 
     if (total === 0) {
@@ -41,7 +40,7 @@ export default async function CoursesPage() {
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl">
             Discover thousands of GSPro courses from designers around the world.
-            Data synced daily from Pakman Studios CSV.
+            Search, filter, and sort to find the perfect course for your golf simulator.
           </p>
         </div>
 
@@ -61,24 +60,14 @@ export default async function CoursesPage() {
           </div>
         )}
 
-        {/* Course Grid */}
+        {/* Course Table */}
         {courses.length > 0 && (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {courses.map((course) => (
-                <CourseCard
-                  key={course.id}
-                  name={course.name}
-                  designer={course.designer}
-                  dateAdded={course.dateAdded.toISOString()}
-                  lastUpdated={course.lastUpdated.toISOString()}
-                />
-              ))}
-            </div>
+            <CourseTable courses={courses} />
 
-            <div className="text-center text-sm text-muted-foreground">
+            <div className="text-center text-sm text-muted-foreground pt-4">
               <p>
-                Showing {courses.length} of {total} courses • Data from{" "}
+                Data from{" "}
                 <a
                   href="https://pakgolfstudios.com/gspro-course-list/"
                   target="_blank"
@@ -87,9 +76,7 @@ export default async function CoursesPage() {
                 >
                   PakGolf Studios
                 </a>
-              </p>
-              <p className="mt-2 text-xs">
-                Course data synced daily from CSV for reliability
+                {" "}• Course data synced daily from CSV for reliability
               </p>
             </div>
           </>
