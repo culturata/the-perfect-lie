@@ -4,17 +4,17 @@ import { Button } from "@/components/ui/button";
 
 export default function ResourcesPage() {
   return (
-    <div className="container py-12">
-      <div className="flex flex-col gap-8">
+    <div className="container py-12 md:py-16">
+      <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex flex-col gap-4">
+        <div className="space-y-4">
           <div className="flex items-center gap-2">
             <Badge variant="secondary">Resource Hub</Badge>
           </div>
-          <h1 className="text-4xl font-bold tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
             Golf Sim Resources
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl">
+          <p className="text-muted-foreground max-w-2xl">
             Find the best launch monitors, projectors, hitting mats, and
             everything you need for your golf simulator setup. Discover trusted
             retailers and join vibrant communities.
@@ -22,7 +22,7 @@ export default function ResourcesPage() {
         </div>
 
         {/* Categories Preview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           <Card>
             <CardHeader>
               <CardTitle>Launch Monitors</CardTitle>
