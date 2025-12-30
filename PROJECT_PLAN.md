@@ -1,7 +1,10 @@
-# GSPro Community App - Project Plan
+# The Perfect Lie - Project Plan
 
 ## Project Overview
 A modern, full-stack Next.js application for the GSPro golf simulator community to discover courses, find resources, and connect with fellow golf simulation enthusiasts.
+
+**App Name**: The Perfect Lie
+**Tagline**: Discover. Play. Connect.
 
 ## Tech Stack
 
@@ -652,21 +655,14 @@ YOUTUBE_GOLF_PLAYLIST_ID=
 
 ## Questions to Answer
 
-1. **YouTube Playlist URLs**: Need specific playlist IDs for:
-   - Eagles & Birdies GSPro Flyovers
-   - General Golf Videos
-
-2. **Admin Users**: Who should have admin access initially?
-
-3. **Branding**:
-   - App name: "GSPro Community Hub"? Or different name?
-   - Logo/colors preferences?
-
-4. **Domain**: Do you have a domain name in mind?
-
-5. **Analytics**: Should we add Google Analytics or similar?
-
-6. **Social Auth**: Just email/password or also Google/Discord OAuth?
+1. ✅ **App Name**: The Perfect Lie
+2. ✅ **YouTube Flyovers Playlist**: PLEKTcA5lfrkyDvi4zRCO1CKDFzXIL8xd0
+3. **General Golf Videos Playlist**: To be provided later
+4. **Admin Users**: Who should have admin access initially?
+5. **Branding**: Logo/colors preferences?
+6. **Domain**: To be determined
+7. **Analytics**: Should we add Google Analytics or similar?
+8. **Social Auth**: Just email/password or also Google/Discord OAuth?
 
 ---
 
