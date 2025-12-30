@@ -66,7 +66,15 @@ export default async function CoursePage({ params }: CoursePageProps) {
               {course.designer && (
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <User className="w-4 h-4" />
-                  <span>Designed by {course.designer}</span>
+                  <span>
+                    Designed by{" "}
+                    <Link
+                      href={`/designers/${encodeURIComponent(course.designer)}`}
+                      className="text-primary hover:underline font-medium"
+                    >
+                      {course.designer}
+                    </Link>
+                  </span>
                 </div>
               )}
             </div>
@@ -123,7 +131,12 @@ export default async function CoursePage({ params }: CoursePageProps) {
                 {course.designer && (
                   <div className="flex flex-col gap-1">
                     <span className="text-sm text-muted-foreground">Designer</span>
-                    <span className="text-sm font-medium">{course.designer}</span>
+                    <Link
+                      href={`/designers/${encodeURIComponent(course.designer)}`}
+                      className="text-sm font-medium text-primary hover:underline"
+                    >
+                      {course.designer}
+                    </Link>
                   </div>
                 )}
                 {course.location && (

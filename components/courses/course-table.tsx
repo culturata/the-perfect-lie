@@ -267,8 +267,18 @@ export function CourseTable({ courses }: CourseTableProps) {
                       {course.name}
                     </Link>
                   </TableCell>
-                  <TableCell className="hidden md:table-cell text-muted-foreground">
-                    {course.designer || "—"}
+                  <TableCell className="hidden md:table-cell">
+                    {course.designer ? (
+                      <Link
+                        href={`/designers/${encodeURIComponent(course.designer)}`}
+                        className="text-muted-foreground hover:text-primary hover:underline"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {course.designer}
+                      </Link>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
                   </TableCell>
                   <TableCell className="hidden lg:table-cell text-muted-foreground">
                     {course.location || "—"}
