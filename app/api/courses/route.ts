@@ -1,73 +1,59 @@
 import { NextRequest, NextResponse } from "next/server";
-import { scrapePakmanCourses } from "@/lib/scrapers/pakman";
-
-// Cache courses in memory for 1 hour
-let coursesCache: {
-  data: any[];
-  timestamp: number;
-} | null = null;
-
-const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
+import { db } from "@/lib/db";
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const search = searchParams.get("search") || "";
     const designer = searchParams.get("designer") || "";
+    const tourStop = searchParams.get("tourStop") === "true";
+    const majorVenue = searchParams.get("majorVenue") === "true";
+    const historic = searchParams.get("historic") === "true";
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "24");
 
-    // Check if cache is valid
-    const now = Date.now();
-    if (
-      !coursesCache ||
-      now - coursesCache.timestamp > CACHE_DURATION
-    ) {
-      console.log("Cache miss or expired, scraping fresh data...");
-      const courses = await scrapePakmanCourses();
-      coursesCache = {
-        data: courses,
-        timestamp: now,
-      };
-    } else {
-      console.log("Using cached course data");
-    }
+    // Build where clause
+    const where: any = {};
 
-    let filteredCourses = [...coursesCache.data];
-
-    // Apply search filter
     if (search) {
-      const searchLower = search.toLowerCase();
-      filteredCourses = filteredCourses.filter(
-        (course) =>
-          course.name.toLowerCase().includes(searchLower) ||
-          course.designer?.toLowerCase().includes(searchLower)
-      );
+      where.OR = [
+        { name: { contains: search, mode: "insensitive" } },
+        { designer: { contains: search, mode: "insensitive" } },
+        { location: { contains: search, mode: "insensitive" } },
+      ];
     }
 
-    // Apply designer filter
     if (designer) {
-      filteredCourses = filteredCourses.filter(
-        (course) =>
-          course.designer?.toLowerCase() === designer.toLowerCase()
-      );
+      where.designer = { contains: designer, mode: "insensitive" };
     }
 
-    // Sort by date (newest first)
-    filteredCourses.sort((a, b) => {
-      return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
+    if (tourStop) {
+      where.tourStop = true;
+    }
+
+    if (majorVenue) {
+      where.majorVenue = true;
+    }
+
+    if (historic) {
+      where.historic = true;
+    }
+
+    // Get total count
+    const total = await db.course.count({ where });
+
+    // Get paginated courses
+    const courses = await db.course.findMany({
+      where,
+      orderBy: { lastUpdated: "desc" },
+      skip: (page - 1) * limit,
+      take: limit,
     });
 
-    // Calculate pagination
-    const total = filteredCourses.length;
     const totalPages = Math.ceil(total / limit);
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-
-    const paginatedCourses = filteredCourses.slice(startIndex, endIndex);
 
     return NextResponse.json({
-      courses: paginatedCourses,
+      courses,
       pagination: {
         page,
         limit,

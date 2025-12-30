@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { scrapePakmanCourses } from "@/lib/scrapers/pakman";
+import { db } from "@/lib/db";
 import { Download, Calendar, User, MapPin, Star } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -22,10 +22,12 @@ interface CoursePageProps {
 export default async function CoursePage({ params }: CoursePageProps) {
   const { slug } = await params;
 
-  // Fetch courses and find the matching one
+  // Fetch course from database by matching the slug
   let course = null;
   try {
-    const courses = await scrapePakmanCourses();
+    // Get all courses and find the one that matches the slug
+    const courses = await db.course.findMany();
+
     // Find course by slug (URL-encoded name)
     course = courses.find(
       (c) => encodeURIComponent(c.name.toLowerCase().replace(/\s+/g, "-")) === slug

@@ -19,15 +19,21 @@ model Course {
   downloadUrl String
   sourceUrl   String? // Original Pakman Studios URL
 
+  // CSV fields from Pakman Studios
+  server      String? // Server type
+  location    String? // Real-world location
+  version     String? // Version number
+  tourStop    Boolean  @default(false) // Is this a tour stop course
+  majorVenue  Boolean  @default(false) // Is this a major venue
+  historic    Boolean  @default(false) // Is this a historic course
+
   // Optional fields (can be added by users/admin)
   description String? @db.Text
   imageUrl    String?
-  location    String? // Real-world location
   courseType  String? // links, parkland, desert, etc.
   holes       Int? // 9 or 18
   difficulty  Int? // 1-5 rating
   fileSize    String?
-  version     String?
 
   // Relationships
   favorites Favorite[]
@@ -40,6 +46,9 @@ model Course {
   @@index([dateAdded])
   @@index([designer])
   @@index([name])
+  @@index([tourStop])
+  @@index([majorVenue])
+  @@index([historic])
 }
 
 model YouTubeVideo {

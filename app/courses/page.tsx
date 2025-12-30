@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { CourseCard } from "@/components/courses/course-card";
-import { scrapePakmanCourses } from "@/lib/scrapers/pakman";
+import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -10,15 +10,19 @@ export default async function CoursesPage() {
   let total = 0;
 
   try {
-    const allCourses = await scrapePakmanCourses();
-    // Sort by most recent first
-    courses = allCourses
-      .sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime())
-      .slice(0, 24); // Show first 24 courses
-    total = allCourses.length;
+    // Fetch courses from database
+    total = await db.course.count();
+    courses = await db.course.findMany({
+      orderBy: { lastUpdated: "desc" },
+      take: 24,
+    });
+
+    if (total === 0) {
+      error = "No courses found. Please sync the database by visiting /api/sync/courses-csv";
+    }
   } catch (e) {
     console.error("Error fetching courses:", e);
-    error = "Failed to load courses. Please try again later.";
+    error = "Failed to load courses from database. Make sure DATABASE_URL is configured.";
   }
 
   return (
@@ -37,7 +41,7 @@ export default async function CoursesPage() {
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl">
             Discover thousands of GSPro courses from designers around the world.
-            Downloaded directly from Pakman Studios.
+            Data synced daily from Pakman Studios CSV.
           </p>
         </div>
 
@@ -52,7 +56,7 @@ export default async function CoursesPage() {
         {!error && courses.length === 0 && (
           <div className="text-center py-12">
             <p className="text-muted-foreground">
-              Loading courses from Pakman Studios...
+              Loading courses from database...
             </p>
           </div>
         )}
@@ -61,9 +65,9 @@ export default async function CoursesPage() {
         {courses.length > 0 && (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {courses.map((course, index) => (
+              {courses.map((course) => (
                 <CourseCard
-                  key={index}
+                  key={course.id}
                   name={course.name}
                   designer={course.designer}
                   dateAdded={course.dateAdded.toISOString()}
@@ -75,7 +79,7 @@ export default async function CoursesPage() {
 
             <div className="text-center text-sm text-muted-foreground">
               <p>
-                Showing {courses.length} of {total} courses • Data sourced from{" "}
+                Showing {courses.length} of {total} courses • Data from{" "}
                 <a
                   href="https://pakmanstudios.com/gspro-course-list/"
                   target="_blank"
@@ -86,7 +90,7 @@ export default async function CoursesPage() {
                 </a>
               </p>
               <p className="mt-2 text-xs">
-                Course data is cached for 1 hour for better performance
+                Course data synced daily from CSV for reliability
               </p>
             </div>
           </>
