@@ -4,6 +4,13 @@ import { db } from "@/lib/db";
 import { Calendar, User, MapPin, Star } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ReviewForm } from "@/components/reviews/review-form";
+import { ReviewList } from "@/components/reviews/review-list";
+import { CommentForm } from "@/components/comments/comment-form";
+import { CommentThread } from "@/components/comments/comment-thread";
+import { getCourseRatingStats } from "@/app/actions/reviews";
+import { auth } from "@clerk/nextjs/server";
+import { StarRating } from "@/components/ui/star-rating";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +54,98 @@ export default async function CoursePage({ params }: CoursePageProps) {
     console.error("Error loading course:", error);
     notFound();
   }
+
+  // Fetch reviews and comments
+  const { userId } = await auth();
+  const reviews = await db.review.findMany({
+    where: { courseId: course.id },
+    include: {
+      user: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          avatarUrl: true,
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  // Fetch rating statistics
+  const ratingStats = await getCourseRatingStats(course.id);
+
+  // Check if user has already reviewed this course
+  const userReview = reviews.find((review) => review.user.id === userId);
+
+  // Fetch top-level comments (comments without a parent)
+  const topLevelComments = await db.comment.findMany({
+    where: {
+      courseId: course.id,
+      parentId: null,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          avatarUrl: true,
+        },
+      },
+      replies: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              avatarUrl: true,
+            },
+          },
+          replies: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  avatarUrl: true,
+                },
+              },
+              replies: {
+                include: {
+                  user: {
+                    select: {
+                      id: true,
+                      firstName: true,
+                      lastName: true,
+                      avatarUrl: true,
+                    },
+                  },
+                  replies: {
+                    include: {
+                      user: {
+                        select: {
+                          id: true,
+                          firstName: true,
+                          lastName: true,
+                          avatarUrl: true,
+                        },
+                      },
+                      replies: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        orderBy: { createdAt: "asc" },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
 
   const updateDate = new Date(course.lastUpdated).toLocaleDateString("en-US", {
     year: "numeric",
@@ -94,30 +193,53 @@ export default async function CoursePage({ params }: CoursePageProps) {
             </div>
           </div>
 
-        {/* Rating Summary - Coming Soon */}
+        {/* Rating Summary */}
         <Card>
           <CardHeader>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <CardTitle>Community Rating</CardTitle>
-              <div className="flex items-center gap-2">
-                <div className="flex">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                      key={star}
-                      className="w-5 h-5 fill-primary text-primary"
+              <div className="flex items-center gap-3">
+                {ratingStats.averageRating > 0 ? (
+                  <>
+                    <StarRating
+                      rating={ratingStats.averageRating}
+                      readonly
+                      size="md"
                     />
-                  ))}
-                </div>
-                <span className="text-sm text-muted-foreground">
-                  (Coming Soon)
-                </span>
+                    <div className="text-sm">
+                      <span className="font-semibold">
+                        {ratingStats.averageRating.toFixed(1)}
+                      </span>
+                      <span className="text-muted-foreground">
+                        {" "}
+                        ({ratingStats.totalReviews}{" "}
+                        {ratingStats.totalReviews === 1 ? "review" : "reviews"})
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <span className="text-sm text-muted-foreground">
+                    No ratings yet
+                  </span>
+                )}
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Sign in to rate this course and leave a review
-            </p>
+            {userId && !userReview ? (
+              <div className="space-y-4">
+                <h3 className="font-semibold">Write a Review</h3>
+                <ReviewForm courseId={course.id} />
+              </div>
+            ) : userId && userReview ? (
+              <p className="text-sm text-muted-foreground">
+                You've already reviewed this course. See your review below.
+              </p>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Sign in to rate this course and leave a review
+              </p>
+            )}
           </CardContent>
         </Card>
 
@@ -186,23 +308,46 @@ export default async function CoursePage({ params }: CoursePageProps) {
           </CardContent>
         </Card>
 
-        {/* Reviews Section - Coming Soon */}
+        {/* Reviews Section */}
+        {reviews.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Reviews</CardTitle>
+              <CardDescription>
+                What others are saying about this course
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ReviewList reviews={reviews} />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Comments Section */}
         <Card>
           <CardHeader>
-            <CardTitle>Reviews & Comments</CardTitle>
+            <CardTitle>Discussion</CardTitle>
             <CardDescription>
-              Share your experience with this course
+              Join the conversation about this course
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="text-center py-12">
-              <p className="text-muted-foreground mb-2">
-                Reviews and comments are coming soon!
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Sign in to be the first to review this course
-              </p>
-            </div>
+          <CardContent className="space-y-6">
+            {userId && (
+              <div>
+                <h3 className="font-semibold mb-4">Add a Comment</h3>
+                <CommentForm courseId={course.id} />
+              </div>
+            )}
+            {topLevelComments.length > 0 && (
+              <div className={userId ? "pt-6 border-t" : ""}>
+                <CommentThread comments={topLevelComments} courseId={course.id} />
+              </div>
+            )}
+            {!userId && topLevelComments.length === 0 && (
+              <div className="text-center py-12 text-muted-foreground">
+                <p>No comments yet. Sign in to start the discussion!</p>
+              </div>
+            )}
           </CardContent>
         </Card>
 
