@@ -23,9 +23,15 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
   // Fetch course from database by matching the slug
   let course = null;
+  let videos = [];
+
   try {
     // Get all courses and find the one that matches the slug
-    const courses = await db.course.findMany();
+    const courses = await db.course.findMany({
+      include: {
+        videos: true, // Include linked flyover videos
+      },
+    });
 
     // Find course by slug (URL-encoded name)
     course = courses.find(
@@ -35,6 +41,8 @@ export default async function CoursePage({ params }: CoursePageProps) {
     if (!course) {
       notFound();
     }
+
+    videos = course.videos || [];
   } catch (error) {
     console.error("Error loading course:", error);
     notFound();
@@ -204,19 +212,56 @@ export default async function CoursePage({ params }: CoursePageProps) {
         {/* Related Videos */}
         <Card>
           <CardHeader>
-            <CardTitle>Related Flyover Videos</CardTitle>
+            <CardTitle>Flyover Videos</CardTitle>
             <CardDescription>
-              Watch video tours of this course
+              {videos.length > 0
+                ? "Watch video tours of this course"
+                : "No flyover videos available yet"}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground text-center py-8">
-              Check the{" "}
-              <Link href="/flyovers" className="text-primary hover:underline">
-                Flyovers
-              </Link>{" "}
-              page to see if there's a video tour available
-            </p>
+            {videos.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {videos.map((video) => (
+                  <a
+                    key={video.id}
+                    href={`https://www.youtube.com/watch?v=${video.videoId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block rounded-lg overflow-hidden border hover:border-primary transition-colors"
+                  >
+                    <div className="relative aspect-video bg-muted">
+                      <img
+                        src={video.thumbnailUrl}
+                        alt={video.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                        <div className="w-16 h-16 rounded-full bg-red-600 flex items-center justify-center">
+                          <div className="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-white border-b-8 border-b-transparent ml-1"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-3 bg-card">
+                      <h4 className="font-medium text-sm line-clamp-2 group-hover:text-primary transition-colors">
+                        {video.title}
+                      </h4>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {video.channelTitle}
+                      </p>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground text-center py-8">
+                No flyover videos have been linked to this course yet. Check the{" "}
+                <Link href="/flyovers" className="text-primary hover:underline">
+                  Flyovers
+                </Link>{" "}
+                page to see all available videos.
+              </p>
+            )}
           </CardContent>
         </Card>
       </div>

@@ -38,6 +38,7 @@ model Course {
   // Relationships
   favorites Favorite[]
   reviews   Review[]
+  videos    YouTubeVideo[] // Flyover videos for this course
 
   // Metadata
   createdAt DateTime @default(now())
@@ -63,12 +64,17 @@ model YouTubeVideo {
   duration     String?
   viewCount    Int?
 
+  // Course relationship (for flyover videos)
+  courseId String? // Linked course
+  course   Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
+
   // Metadata
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([playlistType])
   @@index([publishedAt])
+  @@index([courseId])
 }
 
 model Resource {
