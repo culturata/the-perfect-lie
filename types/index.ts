@@ -1,4 +1,36 @@
-import { Course, YouTubeVideo, Resource, User, Review } from "@prisma/client";
+// Note: Import Prisma types when client is generated
+// import { Course, YouTubeVideo, Resource, User, Review } from "@prisma/client";
+
+// Base types (will be replaced by Prisma generated types)
+export type Course = {
+  id: string;
+  name: string;
+  designer?: string | null;
+  dateAdded: Date;
+  lastUpdated: Date;
+  downloadUrl: string;
+  sourceUrl?: string | null;
+  description?: string | null;
+  imageUrl?: string | null;
+  location?: string | null;
+  courseType?: string | null;
+  holes?: number | null;
+  difficulty?: number | null;
+  fileSize?: string | null;
+  version?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type Review = {
+  id: string;
+  userId: string;
+  courseId: string;
+  rating: number;
+  comment?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 export type CourseWithRelations = Course & {
   reviews?: Review[];
@@ -42,5 +74,3 @@ export type ResourceFilters = {
   category?: string;
   featured?: boolean;
 };
-
-export { Course, YouTubeVideo, Resource, User, Review };
