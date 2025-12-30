@@ -1,0 +1,165 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  name        String
+  designer    String?
+  dateAdded   DateTime
+  lastUpdated DateTime
+  downloadUrl String
+  sourceUrl   String? // Original Pakman Studios URL
+
+  // Optional fields (can be added by users/admin)
+  description String? @db.Text
+  imageUrl    String?
+  location    String? // Real-world location
+  courseType  String? // links, parkland, desert, etc.
+  holes       Int? // 9 or 18
+  difficulty  Int? // 1-5 rating
+  fileSize    String?
+  version     String?
+
+  // Relationships
+  favorites Favorite[]
+  reviews   Review[]
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([dateAdded])
+  @@index([designer])
+  @@index([name])
+}
+
+model YouTubeVideo {
+  id           String   @id @default(cuid())
+  videoId      String   @unique // YouTube video ID
+  title        String
+  description  String?  @db.Text
+  thumbnailUrl String
+  publishedAt  DateTime
+  channelTitle String
+  playlistType String // 'flyovers' or 'golf'
+  duration     String?
+  viewCount    Int?
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([playlistType])
+  @@index([publishedAt])
+}
+
+model Resource {
+  id          String           @id @default(cuid())
+  name        String
+  description String?          @db.Text
+  url         String
+  affiliateUrl String?
+  imageUrl    String?
+  category    ResourceCategory
+  subcategory String?
+
+  // Additional fields
+  price    String?
+  brand    String?
+  featured Boolean @default(false)
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+}
+
+enum ResourceCategory {
+  LAUNCH_MONITOR
+  RETAILER
+  EQUIPMENT
+  SOFTWARE
+  COMMUNITY
+}
+
+model User {
+  id        String  @id // Clerk user ID
+  email     String  @unique
+  username  String? @unique
+  firstName String?
+  lastName  String?
+  avatarUrl String?
+
+  // Relationships
+  favorites Favorite[]
+  reviews   Review[]
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Favorite {
+  id       String @id @default(cuid())
+  userId   String
+  courseId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, courseId])
+  @@index([userId])
+}
+
+model Review {
+  id       String  @id @default(cuid())
+  userId   String
+  courseId String
+  rating   Int // 1-5
+  comment  String? @db.Text
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, courseId])
+  @@index([courseId])
+}
+
+model SyncLog {
+  id             String      @id @default(cuid())
+  type           SyncType
+  status         SyncStatus
+  startedAt      DateTime    @default(now())
+  completedAt    DateTime?
+  itemsProcessed Int?
+  errorMessage   String?     @db.Text
+
+  @@index([type, startedAt])
+}
+
+enum SyncType {
+  COURSES
+  YOUTUBE_FLYOVERS
+  YOUTUBE_GOLF
+}
+
+enum SyncStatus {
+  RUNNING
+  SUCCESS
+  FAILED
+}
