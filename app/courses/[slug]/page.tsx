@@ -55,54 +55,55 @@ export default async function CoursePage({ params }: CoursePageProps) {
   });
 
   return (
-    <div className="container py-12">
-      <div className="max-w-5xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="space-y-4">
-          <Link
-            href="/courses"
-            className="text-sm text-muted-foreground hover:text-primary inline-flex items-center"
-          >
-            ← Back to courses
-          </Link>
+    <div className="container py-16 md:py-20">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex flex-col gap-12">
+          {/* Header */}
+          <div className="space-y-6">
+            <Link
+              href="/courses"
+              className="text-sm text-muted-foreground hover:text-primary inline-flex items-center transition-colors"
+            >
+              ← Back to courses
+            </Link>
 
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-                {course.name}
-              </h1>
-              {course.designer && (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <User className="w-4 h-4" />
-                  <span>
-                    Designed by{" "}
-                    <Link
-                      href={`/designers/${encodeURIComponent(course.designer)}`}
-                      className="text-primary hover:underline font-medium"
-                    >
-                      {course.designer}
-                    </Link>
-                  </span>
-                </div>
-              )}
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                <span>Updated {updateDate}</span>
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
+                  {course.name}
+                </h1>
+                {course.designer && (
+                  <div className="flex items-center gap-2 text-muted-foreground text-base">
+                    <User className="w-4 h-4" />
+                    <span>
+                      Designed by{" "}
+                      <Link
+                        href={`/designers/${encodeURIComponent(course.designer)}`}
+                        className="text-primary hover:underline font-medium transition-colors"
+                      >
+                        {course.designer}
+                      </Link>
+                    </span>
+                  </div>
+                )}
               </div>
-              <Badge variant="secondary">GSPro Compatible</Badge>
+
+              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  <span>Updated {updateDate}</span>
+                </div>
+                <Badge variant="secondary">GSPro Compatible</Badge>
+              </div>
             </div>
           </div>
-        </div>
 
         {/* Rating Summary - Coming Soon */}
         <Card>
-          <CardHeader>
+          <CardHeader className="pb-6">
             <div className="flex items-center justify-between">
-              <CardTitle>Community Rating</CardTitle>
-              <div className="flex items-center gap-2">
+              <CardTitle className="text-xl">Community Rating</CardTitle>
+              <div className="flex items-center gap-3">
                 <div className="flex">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Star
@@ -117,8 +118,8 @@ export default async function CoursePage({ params }: CoursePageProps) {
               </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
+          <CardContent className="pt-0">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               Sign in to rate this course and leave a review
             </p>
           </CardContent>
@@ -126,48 +127,48 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
         {/* Course Details */}
         <Card>
-          <CardHeader>
-            <CardTitle>Course Information</CardTitle>
+          <CardHeader className="pb-6">
+            <CardTitle className="text-xl">Course Information</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <div className="flex flex-col gap-1">
-                  <span className="text-sm text-muted-foreground">Name</span>
+          <CardContent className="space-y-6 pt-0">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+              <div className="space-y-4">
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm font-medium text-muted-foreground">Name</span>
                   <span className="text-sm font-medium">{course.name}</span>
                 </div>
                 {course.designer && (
-                  <div className="flex flex-col gap-1">
-                    <span className="text-sm text-muted-foreground">Designer</span>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-sm font-medium text-muted-foreground">Designer</span>
                     <Link
                       href={`/designers/${encodeURIComponent(course.designer)}`}
-                      className="text-sm font-medium text-primary hover:underline"
+                      className="text-sm font-medium text-primary hover:underline transition-colors"
                     >
                       {course.designer}
                     </Link>
                   </div>
                 )}
                 {course.location && (
-                  <div className="flex flex-col gap-1">
-                    <span className="text-sm text-muted-foreground">Location</span>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-sm font-medium text-muted-foreground">Location</span>
                     <span className="text-sm font-medium">{course.location}</span>
                   </div>
                 )}
               </div>
-              <div className="space-y-2">
-                <div className="flex flex-col gap-1">
-                  <span className="text-sm text-muted-foreground">Last Updated</span>
+              <div className="space-y-4">
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm font-medium text-muted-foreground">Last Updated</span>
                   <span className="text-sm font-medium">{updateDate}</span>
                 </div>
                 {course.version && (
-                  <div className="flex flex-col gap-1">
-                    <span className="text-sm text-muted-foreground">Version</span>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-sm font-medium text-muted-foreground">Version</span>
                     <span className="text-sm font-medium">{course.version}</span>
                   </div>
                 )}
                 {course.server && (
-                  <div className="flex flex-col gap-1">
-                    <span className="text-sm text-muted-foreground">Server</span>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-sm font-medium text-muted-foreground">Server</span>
                     <span className="text-sm font-medium">{course.server}</span>
                   </div>
                 )}
@@ -175,7 +176,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
             </div>
 
             {/* Course Badges */}
-            <div className="flex flex-wrap gap-2 pt-2">
+            <div className="flex flex-wrap gap-2 pt-4 border-t">
               {course.tourStop && (
                 <Badge variant="default">Tour Stop</Badge>
               )}
@@ -191,15 +192,15 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
         {/* Reviews Section - Coming Soon */}
         <Card>
-          <CardHeader>
-            <CardTitle>Reviews & Comments</CardTitle>
-            <CardDescription>
+          <CardHeader className="pb-6">
+            <CardTitle className="text-xl">Reviews & Comments</CardTitle>
+            <CardDescription className="text-base leading-relaxed">
               Share your experience with this course
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="text-center py-12">
-              <p className="text-muted-foreground mb-4">
+          <CardContent className="pt-0">
+            <div className="text-center py-16">
+              <p className="text-muted-foreground mb-4 text-base">
                 Reviews and comments are coming soon!
               </p>
               <p className="text-sm text-muted-foreground">
@@ -211,17 +212,17 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
         {/* Related Videos */}
         <Card>
-          <CardHeader>
-            <CardTitle>Flyover Videos</CardTitle>
-            <CardDescription>
+          <CardHeader className="pb-6">
+            <CardTitle className="text-xl">Flyover Videos</CardTitle>
+            <CardDescription className="text-base leading-relaxed">
               {videos.length > 0
                 ? "Watch video tours of this course"
                 : "No flyover videos available yet"}
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             {videos.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {videos.map((video) => (
                   <a
                     key={video.id}
@@ -242,11 +243,11 @@ export default async function CoursePage({ params }: CoursePageProps) {
                         </div>
                       </div>
                     </div>
-                    <div className="p-3 bg-card">
-                      <h4 className="font-medium text-sm line-clamp-2 group-hover:text-primary transition-colors">
+                    <div className="p-4 bg-card">
+                      <h4 className="font-medium text-sm line-clamp-2 group-hover:text-primary transition-colors mb-2">
                         {video.title}
                       </h4>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-xs text-muted-foreground">
                         {video.channelTitle}
                       </p>
                     </div>
@@ -254,9 +255,9 @@ export default async function CoursePage({ params }: CoursePageProps) {
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground text-center py-8">
+              <p className="text-sm text-muted-foreground text-center py-12 leading-relaxed">
                 No flyover videos have been linked to this course yet. Check the{" "}
-                <Link href="/flyovers" className="text-primary hover:underline">
+                <Link href="/flyovers" className="text-primary hover:underline font-medium transition-colors">
                   Flyovers
                 </Link>{" "}
                 page to see all available videos.
@@ -264,6 +265,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
             )}
           </CardContent>
         </Card>
+        </div>
       </div>
     </div>
   );
