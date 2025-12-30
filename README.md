@@ -82,8 +82,9 @@ npx prisma db push
 
 5. **Sync course data**
 
-Perform an initial sync to populate the course database:
+The app supports both remote and local CSV files for course data.
 
+**Option A: Use Remote CSV (Default)**
 ```bash
 # Start the development server
 npm run dev
@@ -94,6 +95,18 @@ curl http://localhost:3000/api/sync/courses-csv
 # Or visit in your browser:
 # http://localhost:3000/api/sync/courses-csv
 ```
+
+**Option B: Use Local CSV File (Recommended)**
+
+If the remote CSV URL is unavailable:
+
+1. Download the CSV from [PakGolf Studios](https://pakgolfstudios.com/gspro-course-list/)
+2. Save it as `/public/data/gspro-course-list.csv`
+3. Add to `.env.local`:
+   ```bash
+   COURSE_CSV_URL=/data/gspro-course-list.csv
+   ```
+4. Run the sync as shown above
 
 6. **Run the development server**
 
@@ -185,7 +198,7 @@ See `prisma/schema.prisma` for the complete schema.
 
 The app syncs data from external sources:
 
-- **Courses**: Downloaded from [Pakman Studios CSV](https://pakmanstudios.com/wp-content/uploads/gspro-course-list.csv)
+- **Courses**: Downloaded from [PakGolf Studios CSV](https://pakgolfstudios.com/wp-content/uploads/gspro-course-list.csv) (formerly Pakman Studios)
   - Fields: Server, Name, Location, Designer, Version, Updated, TourStop, Major Venue, Historic
   - Smart sync: Only updates courses with actual changes (version, dates, or flags)
   - Stores all data in PostgreSQL for fast queries and filtering
@@ -194,7 +207,7 @@ The app syncs data from external sources:
 ### Course Sync Process
 
 The course sync system (`lib/scrapers/csv-sync.ts`):
-1. Downloads the latest CSV from Pakman Studios
+1. Downloads the latest CSV from PakGolf Studios
 2. Parses the CSV data
 3. Compares with existing database records
 4. Only updates courses that have changed

@@ -1,12 +1,21 @@
 /**
- * Pakman Studios CSV Course Sync
+ * PakGolf Studios CSV Course Sync
  * Downloads and parses course data from CSV file
+ * (formerly Pakman Studios)
+ *
+ * Supports both local and remote CSV files:
+ * - Local: Place CSV in /public/data/gspro-course-list.csv
+ * - Remote: Set COURSE_CSV_URL env variable
  */
 
 import { db } from "@/lib/db";
+import { readFile } from "fs/promises";
+import path from "path";
 
-// CSV URL from Pakman Studios
-const CSV_URL = "https://pakmanstudios.com/wp-content/uploads/gspro-course-list.csv";
+// CSV URL - can be local file or remote URL
+// Set COURSE_CSV_URL env variable to override
+const CSV_URL = process.env.COURSE_CSV_URL || "https://pakgolfstudios.com/wp-content/uploads/gspro-course-list.csv";
+const USE_LOCAL_FILE = CSV_URL.startsWith("/") || CSV_URL.startsWith("./");
 
 export interface CSVCourse {
   server: string;
@@ -22,31 +31,42 @@ export interface CSVCourse {
 }
 
 /**
- * Download and parse CSV from Pakman Studios
+ * Download and parse CSV from PakGolf Studios or local file
  */
 export async function downloadCoursesCSV(): Promise<CSVCourse[]> {
   try {
-    console.log("Downloading courses CSV from Pakman Studios...");
+    let csvText: string;
 
-    const response = await fetch(CSV_URL, {
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      },
-      next: { revalidate: 0 }, // Don't cache
-    });
+    if (USE_LOCAL_FILE) {
+      // Read from local file
+      console.log(`Reading courses CSV from local file: ${CSV_URL}`);
+      const filePath = path.join(process.cwd(), "public", CSV_URL);
+      csvText = await readFile(filePath, "utf-8");
+      console.log("Successfully read local CSV file");
+    } else {
+      // Fetch from remote URL
+      console.log(`Downloading courses CSV from: ${CSV_URL}`);
+      const response = await fetch(CSV_URL, {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        },
+        next: { revalidate: 0 }, // Don't cache
+      });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      csvText = await response.text();
+      console.log("Successfully downloaded remote CSV");
     }
 
-    const csvText = await response.text();
     const courses = parseCSV(csvText);
-
-    console.log(`Downloaded ${courses.length} courses from CSV`);
+    console.log(`Parsed ${courses.length} courses from CSV`);
     return courses;
   } catch (error) {
-    console.error("Error downloading CSV:", error);
+    console.error("Error loading CSV:", error);
     throw error;
   }
 }
