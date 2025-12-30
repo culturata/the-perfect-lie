@@ -25,37 +25,36 @@ export default async function CoursesPage() {
   }
 
   return (
-    <div className="container py-16 md:py-20">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col gap-12">
-          {/* Header */}
-          <div className="flex flex-col gap-6">
-            <div className="flex items-center gap-3">
-              <Badge variant="secondary" className="text-sm">Course Directory</Badge>
-              {total > 0 && (
-                <Badge variant="outline" className="text-sm">{total} courses</Badge>
-              )}
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-              Browse GSPro Courses
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">
-              Discover thousands of GSPro courses from designers around the world.
-              Search, filter, and sort to find the perfect course for your golf simulator.
-            </p>
+    <div className="container py-12 md:py-16">
+      <div className="max-w-6xl mx-auto space-y-8">
+        {/* Header */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary">Course Directory</Badge>
+            {total > 0 && (
+              <Badge variant="outline">{total} courses</Badge>
+            )}
           </div>
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+            Browse GSPro Courses
+          </h1>
+          <p className="text-muted-foreground max-w-2xl">
+            Discover thousands of GSPro courses from designers around the world.
+            Search, filter, and sort to find the perfect course for your golf simulator.
+          </p>
+        </div>
 
         {/* Error Message */}
         {error && (
-          <div className="p-6 bg-destructive/10 border border-destructive/20 rounded-lg">
-            <p className="text-sm text-destructive leading-relaxed">{error}</p>
+          <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+            <p className="text-sm text-destructive">{error}</p>
           </div>
         )}
 
         {/* Loading message */}
         {!error && courses.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-muted-foreground text-lg">
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">
               Loading courses from database...
             </p>
           </div>
@@ -66,14 +65,14 @@ export default async function CoursesPage() {
           <>
             <CourseTable courses={courses} />
 
-            <div className="text-center text-sm text-muted-foreground pt-8">
-              <p className="leading-relaxed">
+            <div className="text-center text-sm text-muted-foreground">
+              <p>
                 Data from{" "}
                 <a
                   href="https://pakgolfstudios.com/gspro-course-list/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary hover:underline font-medium"
+                  className="text-primary hover:underline"
                 >
                   PakGolf Studios
                 </a>
@@ -82,7 +81,6 @@ export default async function CoursesPage() {
             </div>
           </>
         )}
-        </div>
       </div>
     </div>
   );
