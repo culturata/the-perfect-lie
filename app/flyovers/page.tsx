@@ -1,7 +1,26 @@
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { VideoCard } from "@/components/videos/video-card";
+import { fetchPlaylistVideos } from "@/lib/youtube/api";
 
-export default function FlyoversPage() {
+export const dynamic = "force-dynamic";
+
+export default async function FlyoversPage() {
+  let videos = [];
+  let error = null;
+
+  try {
+    const playlistId = process.env.YOUTUBE_FLYOVERS_PLAYLIST_ID;
+    if (playlistId) {
+      const result = await fetchPlaylistVideos(playlistId, 24);
+      videos = result.videos;
+    } else {
+      error = "YouTube playlist ID not configured";
+    }
+  } catch (e) {
+    console.error("Error fetching videos:", e);
+    error = "Failed to load videos. Please check your API configuration.";
+  }
+
   return (
     <div className="container py-12">
       <div className="flex flex-col gap-8">
@@ -19,37 +38,42 @@ export default function FlyoversPage() {
           </p>
         </div>
 
-        {/* Coming Soon Message */}
-        <Card className="border-dashed">
-          <CardHeader>
-            <CardTitle>Coming Soon</CardTitle>
-            <CardDescription>
-              YouTube integration in progress
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              We're integrating with the YouTube Data API to bring you the
-              latest flyover videos from Eagles & Birdies. Videos will be
-              automatically synced and displayed in a beautiful grid.
+        {/* Error Message */}
+        {error && (
+          <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+            <p className="text-sm text-destructive">{error}</p>
+            <p className="text-xs text-muted-foreground mt-2">
+              Make sure you've set YOUTUBE_API_KEY and YOUTUBE_FLYOVERS_PLAYLIST_ID
+              in your .env.local file.
             </p>
-            <div className="mt-4 space-y-2 text-sm text-muted-foreground">
-              <p>✅ YouTube playlist ID configured</p>
-              <p>✅ Video player components ready</p>
-              <p>🚧 YouTube API integration in development</p>
-              <p>🚧 Video grid and filtering in development</p>
-            </div>
-            <div className="mt-6 p-4 bg-muted rounded-lg">
-              <p className="text-sm font-medium">Playlist Info:</p>
-              <p className="text-sm text-muted-foreground mt-1">
-                Eagles & Birdies GSPro Flyovers
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Playlist ID: PLEKTcA5lfrkyDvi4zRCO1CKDFzXIL8xd0
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        )}
+
+        {/* Video Grid */}
+        {videos.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {videos.map((video) => (
+              <VideoCard
+                key={video.videoId}
+                videoId={video.videoId}
+                title={video.title}
+                description={video.description}
+                thumbnailUrl={video.thumbnailUrl}
+                publishedAt={video.publishedAt}
+                channelTitle={video.channelTitle}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!error && videos.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">
+              No videos found. Configure your YouTube API key to get started.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
