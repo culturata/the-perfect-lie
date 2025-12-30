@@ -55,8 +55,8 @@ export default async function CoursePage({ params }: CoursePageProps) {
   });
 
   return (
-    <div className="container py-12 md:py-16">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="container px-4 md:px-6 py-12 md:py-16">
+      <div className="max-w-5xl mx-auto space-y-8">
           {/* Header */}
           <div className="space-y-4">
             <Link
