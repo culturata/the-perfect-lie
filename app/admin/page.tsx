@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Package, ArrowRight, Users } from "lucide-react";
+import { Package, ArrowRight, Users, BookOpen } from "lucide-react";
 import { db } from "@/lib/db";
 
 export default async function AdminDashboard() {
@@ -9,8 +9,15 @@ export default async function AdminDashboard() {
   const resourceCount = await db.resource.count();
   const courseCount = await db.course.count();
   const userCount = await db.user.count();
+  const articleCount = await db.article.count();
 
   const stats = [
+    {
+      title: "Articles",
+      value: articleCount,
+      href: "/admin/articles",
+      icon: BookOpen,
+    },
     {
       title: "Resources",
       value: resourceCount,
@@ -59,7 +66,24 @@ export default async function AdminDashboard() {
       {/* Quick Actions */}
       <div>
         <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Article Management</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Link href="/admin/articles/new">
+                <Button variant="outline" className="w-full justify-start">
+                  Add New Article
+                </Button>
+              </Link>
+              <Link href="/admin/articles">
+                <Button variant="outline" className="w-full justify-start">
+                  View All Articles
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Resource Management</CardTitle>
