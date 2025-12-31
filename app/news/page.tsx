@@ -60,7 +60,7 @@ const sidebarItems = {
 
 export default function NewsPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container px-4 py-12">
       {/* Header Ad */}
       <div className="mb-8 flex justify-center">
         <LeaderboardAd className="hidden md:flex" />
@@ -141,7 +141,7 @@ export default function NewsPage() {
         {/* Sidebar - 1/3 width on desktop */}
         <div className="space-y-6">
           {/* Skyscraper Ad - Desktop Only */}
-          <div className="hidden lg:block sticky top-20">
+          <div className="hidden lg:block">
             <LargeSkyscraperAd className="mb-6" />
           </div>
 
