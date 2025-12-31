@@ -115,17 +115,6 @@ export default async function HomePage() {
 
       {/* Main Content */}
       <div className="container px-4 py-12">
-        <div className="flex flex-col lg:flex-row gap-8">
-      {/* Header Ad */}
-      <div className="border-b bg-background">
-        <div className="container px-4 py-4 flex justify-center">
-          <LeaderboardAd className="hidden md:flex" />
-          <MobileBannerAd className="md:hidden" />
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="container px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Content Area */}
           <div className="flex-1 space-y-8">
