@@ -428,7 +428,504 @@ async function main() {
     },
   });
 
-  console.log("Seed completed successfully!");
+  // Article 4: Choosing Your Build Style
+  await prisma.article.upsert({
+    where: { slug: "choosing-build-style-garage-basement-spare-room-shed" },
+    update: {},
+    create: {
+      title: "Choosing Your Build Style: Garage, Spare Room, Basement, Dedicated Shed",
+      slug: "choosing-build-style-garage-basement-spare-room-shed",
+      excerpt: "Understanding the pros, cons, and specific considerations for each location type. Choose the right space for your GSPro simulator based on your home and needs.",
+      category: "START_HERE",
+      readTime: "10 min read",
+      published: true,
+      featured: true,
+      order: 4,
+      publishedAt: new Date(),
+      content: `
+        <h2>Who This Is For</h2>
+        <p>You have space available but need to decide which location will work best for your golf simulator. Each type of space has unique advantages and challenges that affect cost, comfort, and playability.</p>
+
+        <h2>What You're Deciding</h2>
+        <p>The location determines temperature control, noise concerns, ceiling height realities, power availability, and how much construction work you'll need. Your choice affects everything from daily comfort to resale considerations.</p>
+
+        <h2>Key Terms</h2>
+        <ul>
+          <li><strong>Climate control:</strong> Heating and cooling to maintain comfortable year-round play</li>
+          <li><strong>Finished space:</strong> Insulated, drywalled, with proper flooring and HVAC</li>
+          <li><strong>Unfinished space:</strong> Bare studs, concrete, or exposed framing requiring finishing work</li>
+          <li><strong>Dedicated space:</strong> Room used solely for the simulator (no dual-purpose)</li>
+          <li><strong>Offset bay:</strong> Hitting position not centered due to room constraints</li>
+        </ul>
+
+        <h2>The Decision Framework</h2>
+
+        <h3>Step 1: Measure All Candidate Spaces</h3>
+        <p>For each potential location, record:</p>
+        <ul>
+          <li>Ceiling height (minimum point with driver swing)</li>
+          <li>Width (wall to wall)</li>
+          <li>Depth (front to back)</li>
+          <li>Obstructions (posts, fixtures, stairs)</li>
+          <li>Power access (circuit availability)</li>
+          <li>Current climate control</li>
+        </ul>
+
+        <h3>Step 2: Evaluate Climate and Comfort</h3>
+        <p>Will you actually use it year-round? A garage in Arizona summer or Minnesota winter without climate control means seasonal-only use.</p>
+
+        <h3>Step 3: Consider Noise Impact</h3>
+        <p>Ball strikes on impact screens are loud. Who will hear it and when will you play? Basements isolate noise better than spare rooms adjacent to bedrooms.</p>
+
+        <h3>Step 4: Calculate Total Investment</h3>
+        <p>Include finishing costs, climate control, electrical work, and equipment. An unfinished garage might need $5,000-$15,000 in construction before you buy any golf equipment.</p>
+
+        <h2>Recommended Setups</h2>
+
+        <h3>Garage Build</h3>
+        <p><strong>Best for:</strong> DIY builders, those with high ceilings, people wanting a larger space</p>
+
+        <p><strong>Advantages:</strong></p>
+        <ul>
+          <li>Often highest ceilings (10+ ft common)</li>
+          <li>Large square footage (easy to fit full enclosure)</li>
+          <li>Direct exterior access (deliveries, ventilation)</li>
+          <li>Less worried about noise (somewhat isolated)</li>
+          <li>Easy to get aggressive with modifications</li>
+        </ul>
+
+        <p><strong>Challenges:</strong></p>
+        <ul>
+          <li>Climate control costs (large space, poor insulation)</li>
+          <li>Concrete floor (need good subfloor/mat solution)</li>
+          <li>Usually unfinished (insulation, drywall, lighting needed)</li>
+          <li>May sacrifice parking/storage</li>
+          <li>Garage door creates temperature swings</li>
+        </ul>
+
+        <p><strong>Typical additional costs:</strong> $3,000-$10,000 for insulation, drywall, mini-split HVAC, electrical upgrades</p>
+
+        <p><strong>GSPro considerations:</strong> Large garages allow for gallery seating and multiple hitting positions. Great for hosting sim golf nights.</p>
+
+        <h3>Basement Build</h3>
+        <p><strong>Best for:</strong> Year-round comfort, noise isolation, already-finished spaces</p>
+
+        <p><strong>Advantages:</strong></p>
+        <ul>
+          <li>Naturally temperature-stable</li>
+          <li>Noise isolated from main living areas</li>
+          <li>Often already has electrical and lighting</li>
+          <li>Privacy for long practice sessions</li>
+          <li>Usually climate controlled already</li>
+        </ul>
+
+        <p><strong>Challenges:</strong></p>
+        <ul>
+          <li>Ceiling height often 8-9 ft (tight for taller golfers)</li>
+          <li>Posts, ducts, and obstacles common</li>
+          <li>Equipment delivery down stairs</li>
+          <li>Humidity concerns in some climates</li>
+          <li>Limited natural light</li>
+        </ul>
+
+        <p><strong>Typical additional costs:</strong> $1,000-$5,000 for ceiling padding, offset enclosure framing, dehumidifier</p>
+
+        <p><strong>GSPro considerations:</strong> Perfect for dedicated practice. The isolation lets you play early morning or late night without disturbing others.</p>
+
+        <h3>Spare Room Build</h3>
+        <p><strong>Best for:</strong> Minimal construction, integration with home living space, smaller budgets</p>
+
+        <p><strong>Advantages:</strong></p>
+        <ul>
+          <li>Already finished and climate controlled</li>
+          <li>No major construction required</li>
+          <li>Convenient access from main living area</li>
+          <li>Easy to monitor kids/family while playing</li>
+          <li>Lower initial investment</li>
+        </ul>
+
+        <p><strong>Challenges:</strong></p>
+        <ul>
+          <li>Usually smaller dimensions (8-10 ft ceilings, 10-12 ft width)</li>
+          <li>Noise impacts bedrooms/living areas</li>
+          <li>Must preserve room appearance somewhat</li>
+          <li>Limited to removable/non-destructive builds</li>
+          <li>May need to share space (fold-up solutions)</li>
+        </ul>
+
+        <p><strong>Typical additional costs:</strong> $500-$2,000 for acoustic treatment, compact enclosure, careful mounting</p>
+
+        <p><strong>GSPro considerations:</strong> Compact setups work well for solo play and quick practice sessions. Consider quieter hitting mats.</p>
+
+        <h3>Dedicated Shed Build</h3>
+        <p><strong>Best for:</strong> Creating the perfect space from scratch, those with yard space, ultimate customization</p>
+
+        <p><strong>Advantages:</strong></p>
+        <ul>
+          <li>Design space exactly for simulator dimensions</li>
+          <li>No compromise on room layout or ceiling height</li>
+          <li>Complete noise isolation from house</li>
+          <li>Can include bathroom, seating, bar area</li>
+          <li>Adds property value as finished structure</li>
+        </ul>
+
+        <p><strong>Challenges:</strong></p>
+        <ul>
+          <li>Highest upfront cost ($15,000-$50,000+ for structure)</li>
+          <li>Requires permits, foundation, utilities</li>
+          <li>Long construction timeline</li>
+          <li>Need to run power from main panel</li>
+          <li>Separate climate control system needed</li>
+        </ul>
+
+        <p><strong>Typical additional costs:</strong> $20,000-$50,000+ for complete structure, foundation, HVAC, electrical service</p>
+
+        <p><strong>GSPro considerations:</strong> The ultimate setup. Build with perfect ceiling height, soundproofing, and gallery seating for tournaments and leagues.</p>
+
+        <h2>Common Mistakes</h2>
+        <ul>
+          <li><strong>Picking the room with just enough space:</strong> You need buffer zones. A 10x15 room feels cramped even if the math says it fits.</li>
+          <li><strong>Ignoring summer/winter temperature swings:</strong> You won't use a 95°F garage or 40°F unheated space no matter how nice the simulator.</li>
+          <li><strong>Underestimating noise impact:</strong> Spouses and kids will complain if every driver hit rattles the bedroom above.</li>
+          <li><strong>Forgetting about equipment delivery:</strong> That screen and enclosure are huge and heavy. Can you get them to the basement?</li>
+          <li><strong>Not planning for power needs:</strong> Simulator, PC, projector, lights, mini-split all running simultaneously requires adequate circuits.</li>
+        </ul>
+
+        <h2>Quick Checklist</h2>
+        <ul>
+          <li>☐ Ceiling height adequate for tallest user: _____ ft</li>
+          <li>☐ Room dimensions: _____ W x _____ D x _____ H</li>
+          <li>☐ Current climate control: Yes / No / Seasonal</li>
+          <li>☐ Noise neighbors: Bedrooms / Living areas / Isolated</li>
+          <li>☐ Power available: 15A / 20A / Need upgrade</li>
+          <li>☐ Construction budget: $ _____</li>
+          <li>☐ Equipment access path: Clear / Tight / Problematic</li>
+          <li>☐ Finishing status: Finished / Partial / Unfinished</li>
+          <li>☐ Dual-purpose needs: Dedicated / Shared space</li>
+        </ul>
+
+        <h2>Next Steps</h2>
+        <p>With your location chosen, move on to detailed space planning and launch monitor selection. Your room's specific constraints will determine which launch monitor technology works best.</p>
+      `,
+    },
+  });
+
+  // Article 5: Avoiding Common Mistakes
+  await prisma.article.upsert({
+    where: { slug: "avoiding-common-mistakes-15-things-that-ruin-builds" },
+    update: {},
+    create: {
+      title: "Avoiding Common Mistakes: The 15 Things That Ruin Builds",
+      slug: "avoiding-common-mistakes-15-things-that-ruin-builds",
+      excerpt: "Learn from others' expensive mistakes. These 15 common errors can derail your golf simulator build—and how to avoid every one of them.",
+      category: "START_HERE",
+      readTime: "12 min read",
+      published: true,
+      featured: true,
+      order: 5,
+      publishedAt: new Date(),
+      content: `
+        <h2>Who This Is For</h2>
+        <p>Anyone planning a golf simulator build who wants to avoid costly mistakes that plague first-time builders. This guide distills lessons from hundreds of builds.</p>
+
+        <h2>The 15 Biggest Mistakes</h2>
+
+        <h3>1. Buying the Launch Monitor First</h3>
+        <p><strong>Why it's wrong:</strong> Different launch monitors have different space, lighting, and positioning requirements. If you buy first, you may discover your room doesn't work for that technology.</p>
+
+        <p><strong>The fix:</strong> Measure your space completely, understand its constraints (ceiling height, depth, lighting control), then choose a launch monitor that fits your room.</p>
+
+        <h3>2. Skimping on the Hitting Mat</h3>
+        <p><strong>Why it's wrong:</strong> A $200 mat feels fine for 20 swings. After 200 swings, your joints hurt. After 2,000 swings, you have elbow or wrist pain that makes you avoid using the sim.</p>
+
+        <p><strong>The fix:</strong> Budget $400-$800 for a quality mat with good padding and replaceable hitting surface. Your joints are worth it. Consider Country Club Elite, Fiberbuilt, or TrueStrike.</p>
+
+        <h3>3. Mounting the Projector Where the Golfer Casts Shadows</h3>
+        <p><strong>Why it's wrong:</strong> Your body blocks the image during the swing, creating distracting shadows on screen. This breaks immersion in GSPro's beautiful courses.</p>
+
+        <p><strong>The fix:</strong> Mount the projector ahead of the golfer's position (ceiling mount 3-6 feet behind the ball) or use an ultra-short-throw unit close to the screen.</p>
+
+        <h3>4. Not Testing Ceiling Height with Driver at Full Swing</h3>
+        <p><strong>Why it's wrong:</strong> Measuring with a tape measure doesn't account for club length and swing arc. Many builders think they have enough clearance until they nearly hit the ceiling on backswing.</p>
+
+        <p><strong>The fix:</strong> Stand in your planned hitting position with your driver. Take slow, full swings. If your club comes within 6 inches of the ceiling, you don't have enough room.</p>
+
+        <h3>5. Choosing Screen Size Before Measuring Projector Throw Distance</h3>
+        <p><strong>Why it's wrong:</strong> You can't get a 14-foot image from 8 feet away with a standard throw projector. The math won't work, and you'll either have to return the projector or shrink the screen.</p>
+
+        <p><strong>The fix:</strong> Determine where the projector can physically mount, measure distance to screen plane, then calculate maximum screen width for that throw distance and projector's throw ratio.</p>
+
+        <h3>6. Underestimating Ball-to-Screen Distance Comfort</h3>
+        <p><strong>Why it's wrong:</strong> Standing 6 feet from the screen feels cramped and increases ricochet risk. You want comfortable spacing that mimics a real driving range.</p>
+
+        <p><strong>The fix:</strong> Plan for 8-10 feet minimum from ball to screen. 10-12 feet is more comfortable. Test the distance with practice swings before finalizing the layout.</p>
+
+        <h3>7. Using Digital Keystone to Fix Projector Alignment</h3>
+        <p><strong>Why it's wrong:</strong> Keystone crops and warps the image, reducing effective resolution and clarity. GSPro's details suffer.</p>
+
+        <p><strong>The fix:</strong> Mount the projector square to the screen. Use optical lens shift if available. Plan your mount location to avoid needing correction.</p>
+
+        <h3>8. Building PC to Minimum Specs</h3>
+        <p><strong>Why it's wrong:</strong> Minimum specs run GSPro but not smoothly. Frame rate drops, stuttering, and long load times make the experience frustrating.</p>
+
+        <p><strong>The fix:</strong> Build to recommended specs or higher. GSPro demands a strong GPU and fast CPU. A capable PC makes every session better.</p>
+
+        <h3>9. Forgetting Side Protection</h3>
+        <p><strong>Why it's wrong:</strong> Everyone hits a shank or slice occasionally. Without side netting, you'll damage walls, break windows, or hit people.</p>
+
+        <p><strong>The fix:</strong> Extend netting or padding at least 3 feet past each side of the screen. Protect the "miss side" especially if using an offset hitting bay.</p>
+
+        <h3>10. Not Planning Cable Routes Before Building Enclosure</h3>
+        <p><strong>Why it's wrong:</strong> After the enclosure is built, running HDMI, power, and USB cables becomes difficult. Exposed cables look messy and create trip hazards.</p>
+
+        <p><strong>The fix:</strong> Plan cable routes during design. Use conduit or cable raceways. Know where PC, projector, and launch monitor will connect before framing.</p>
+
+        <h3>11. Choosing the Wrong Launch Monitor for Your Space</h3>
+        <p><strong>Why it's wrong:</strong> Photometric units need controlled lighting. Some radar units need specific placement distances. Camera systems need clear ball view. The wrong choice causes constant misreads.</p>
+
+        <p><strong>The fix:</strong> Match launch monitor technology to your room's reality. Garage with lots of ambient light? Avoid photometric. Limited depth? Some radar units won't work.</p>
+
+        <h3>12. Ignoring Noise Impact on Household</h3>
+        <p><strong>Why it's wrong:</strong> Impact screens are loud. Ball hits echo. If your sim shares a wall with a bedroom, you'll get complaints and won't play as much.</p>
+
+        <p><strong>The fix:</strong> Choose location considering noise. Add acoustic treatment. Consider quieter hitting mats. Don't build next to master bedroom.</p>
+
+        <h3>13. Buying Impact Screen Based on Price Alone</h3>
+        <p><strong>Why it's wrong:</strong> Cheap screens have more bounce-back, wear faster, create more noise, and often have poor projection quality with hotspots.</p>
+
+        <p><strong>The fix:</strong> Balance price with durability, noise reduction, image quality, and safety. Read reviews from actual sim builders. Budget $300-$800 for quality material.</p>
+
+        <h3>14. Not Accounting for Climate Control Costs</h3>
+        <p><strong>Why it's wrong:</strong> An unheated garage or un-air-conditioned space becomes unusable seasonally. You built a $15,000 simulator you can only use 6 months a year.</p>
+
+        <p><strong>The fix:</strong> Include mini-split or HVAC costs in your budget. A $1,500 climate control system makes a $10,000 simulator usable year-round.</p>
+
+        <h3>15. Trying to Save Money by Building Too Small</h3>
+        <p><strong>Why it's wrong:</strong> Cramped spaces feel uncomfortable, limit full swings, and create safety concerns. You avoid using it because it doesn't feel good.</p>
+
+        <p><strong>The fix:</strong> If your best space is borderline, consider not building yet. Save for a larger space or wait until you move. A comfortable sim you use is better than a cramped one you avoid.</p>
+
+        <h2>Prevention Checklist</h2>
+        <p>Before buying ANY equipment:</p>
+        <ul>
+          <li>☐ Space measured completely (ceiling, width, depth, obstructions)</li>
+          <li>☐ Throw distance calculated for desired screen size</li>
+          <li>☐ Launch monitor choice matches room lighting and space</li>
+          <li>☐ Climate control plan in place</li>
+          <li>☐ Cable routes identified</li>
+          <li>☐ Side protection planned</li>
+          <li>☐ Noise impact considered</li>
+          <li>☐ Quality mat budgeted ($400+)</li>
+          <li>☐ PC specs meet recommended for GSPro</li>
+          <li>☐ Ball-to-screen distance confirmed comfortable (8-10+ ft)</li>
+          <li>☐ Ceiling clearance tested with actual driver swings</li>
+          <li>☐ Screen material researched (not cheapest option)</li>
+          <li>☐ Projector mounting position avoids shadows</li>
+          <li>☐ Total budget includes finishing work</li>
+          <li>☐ Room is actually large enough to be comfortable</li>
+        </ul>
+
+        <h2>What Successful Builds Do Differently</h2>
+        <ul>
+          <li><strong>They plan the whole system before buying components</strong> - Everything works together</li>
+          <li><strong>They prioritize comfort over cost savings</strong> - Quality mat, adequate space, climate control</li>
+          <li><strong>They ask experienced builders for advice</strong> - Communities share what works</li>
+          <li><strong>They buy quality for high-impact components</strong> - Mat, screen, launch monitor, PC</li>
+          <li><strong>They build slightly bigger than minimum</strong> - Buffer space makes everything better</li>
+        </ul>
+
+        <h2>Recovery from Common Mistakes</h2>
+        <p>Already made one of these mistakes? Here's how to fix them:</p>
+
+        <ul>
+          <li><strong>Wrong launch monitor:</strong> Sell it and buy one that fits your space (cut your losses early)</li>
+          <li><strong>Cheap mat hurting joints:</strong> Upgrade immediately - your long-term health is worth it</li>
+          <li><strong>Shadow issues:</strong> Reposition projector mount or add lens shift if available</li>
+          <li><strong>Too-small screen:</strong> Easier to buy a better projector than rebuild enclosure</li>
+          <li><strong>Noise complaints:</strong> Add acoustic panels, quieter mat, limit playing hours</li>
+        </ul>
+
+        <h2>Next Steps</h2>
+        <p>With these mistakes in mind, you're ready to plan your build properly. Start with accurate space measurement, then move through component selection systematically.</p>
+      `,
+    },
+  });
+
+  // Article 6: Radar vs Photometric Launch Monitors
+  await prisma.article.upsert({
+    where: { slug: "radar-vs-photometric-launch-monitor-comparison" },
+    update: {},
+    create: {
+      title: "Radar vs Photometric: Which Launch Monitor Style Fits Your Space",
+      slug: "radar-vs-photometric-launch-monitor-comparison",
+      excerpt: "Understanding the fundamental differences between radar-based and photometric launch monitors, and choosing the right technology for your room and GSPro setup.",
+      category: "LAUNCH_MONITORS",
+      readTime: "14 min read",
+      published: true,
+      featured: true,
+      order: 6,
+      publishedAt: new Date(),
+      content: `
+        <h2>Who This Is For</h2>
+        <p>You're choosing a launch monitor for your GSPro simulator and need to understand which technology works best for your specific room constraints.</p>
+
+        <h2>What You're Deciding</h2>
+        <p>The core measurement technology affects accuracy, cost, space requirements, lighting sensitivity, and ease of setup. This is your single most important equipment decision.</p>
+
+        <h2>Key Terms</h2>
+        <ul>
+          <li><strong>Radar-based:</strong> Uses Doppler radar to track club and ball speed, measuring actual ball flight</li>
+          <li><strong>Photometric:</strong> Uses high-speed cameras and light sensors to measure ball at impact, then calculates flight</li>
+          <li><strong>Camera-based:</strong> Uses computer vision to track ball and club, processing visual data</li>
+          <li><strong>Spin axis:</strong> The tilt of ball rotation affecting curve (draw/fade)</li>
+          <li><strong>Club data:</strong> Face angle, path, attack angle, club speed measured at impact</li>
+          <li><strong>Lighting requirements:</strong> Controlled conditions needed for accurate photometric reads</li>
+        </ul>
+
+        <h2>The Decision Framework</h2>
+
+        <h3>Step 1: Assess Your Room's Lighting Control</h3>
+        <p>Can you control ambient light? Photometric units need consistent, moderate lighting. Garages with windows and changing sunlight are challenging. Basements with controlled lighting are ideal.</p>
+
+        <h3>Step 2: Measure Available Depth</h3>
+        <p>Some radar units need 8-10 feet from ball to screen. Photometric units typically work in tighter spaces (6-8 feet works). Know your constraint.</p>
+
+        <h3>Step 3: Define Your Budget</h3>
+        <p>Entry-level photometric: $500-$2,000. Mid-range photometric: $2,000-$4,000. Radar systems: $4,000-$20,000+. Camera systems: $500-$3,000.</p>
+
+        <h3>Step 4: Decide What Data Matters</h3>
+        <p>For GSPro shot accuracy, you need ball speed, launch angle, spin rate, spin axis at minimum. Club data is bonus but not essential for realistic ball flight.</p>
+
+        <h2>Radar-Based Systems</h2>
+
+        <h3>How They Work</h3>
+        <p>Doppler radar tracks the moving ball and club, measuring actual flight characteristics. The unit sees the ball leave and tracks it through space.</p>
+
+        <h3>Advantages</h3>
+        <ul>
+          <li><strong>Outdoor/indoor flexible:</strong> Works in varying light conditions</li>
+          <li><strong>Actual ball flight:</strong> Measures real data, not calculations</li>
+          <li><strong>Full club data:</strong> Path, face angle, attack angle (higher-end units)</li>
+          <li><strong>Putting data:</strong> Many can measure putting stroke</li>
+          <li><strong>No logo positioning:</strong> Ball orientation doesn't matter</li>
+        </ul>
+
+        <h3>Challenges</h3>
+        <ul>
+          <li><strong>Cost:</strong> $4,000+ for quality units (GCQuad, Trackman, Uneekor)</li>
+          <li><strong>Space requirements:</strong> Need adequate ball flight distance for accurate reads</li>
+          <li><strong>Placement sensitivity:</strong> Must be positioned correctly relative to ball</li>
+          <li><strong>Reflections:</strong> Metal surfaces can interfere with radar</li>
+        </ul>
+
+        <h3>Popular Radar Units for GSPro</h3>
+        <ul>
+          <li><strong>Foresight GCQuad ($10,000-$13,000):</strong> Industry standard, exceptional accuracy</li>
+          <li><strong>Trackman ($20,000+):</strong> Professional grade, primarily outdoor</li>
+          <li><strong>Uneekor EYE XO ($6,000-$8,000):</strong> Overhead mount, great for tight spaces</li>
+          <li><strong>Full Swing KIT ($4,000-$6,000):</strong> Good entry to radar category</li>
+        </ul>
+
+        <h2>Photometric Systems</h2>
+
+        <h3>How They Work</h3>
+        <p>High-speed cameras capture ball at impact, measuring dimple rotation and speed. Software calculates expected ball flight based on impact data.</p>
+
+        <h3>Advantages</h3>
+        <ul>
+          <li><strong>Cost effective:</strong> $500-$4,000 range well-represented</li>
+          <li><strong>Compact placement:</strong> Small units, easy to position</li>
+          <li><strong>Accurate ball data:</strong> Excellent spin and speed measurements</li>
+          <li><strong>Works in tight spaces:</strong> Don't need full ball flight distance</li>
+          <li><strong>Easy setup:</strong> Less finicky than radar about exact placement</li>
+        </ul>
+
+        <h3>Challenges</h3>
+        <ul>
+          <li><strong>Lighting critical:</strong> Needs consistent, controlled lighting</li>
+          <li><strong>Ball logo positioning:</strong> Some units require logo alignment</li>
+          <li><strong>Limited club data:</strong> Most don't measure club path/face</li>
+          <li><strong>Calibration needed:</strong> Must be aligned and leveled precisely</li>
+          <li><strong>Calculated flight:</strong> Predicts rather than measures actual trajectory</li>
+        </ul>
+
+        <h3>Popular Photometric Units for GSPro</h3>
+        <ul>
+          <li><strong>SkyTrak+ ($2,500-$3,000):</strong> Proven accuracy, great GSPro integration</li>
+          <li><strong>Bushnell Launch Pro ($3,500):</strong> Rebranded GC3, excellent data</li>
+          <li><strong>Garmin Approach R10 ($600-$700):</strong> Budget entry, decent accuracy</li>
+          <li><strong>Rapsodo MLM2Pro ($700-$900):</strong> Good value, solid performance</li>
+          <li><strong>FlightScope Mevo+ ($2,000):</strong> Hybrid radar/camera, versatile</li>
+        </ul>
+
+        <h2>Camera-Based Systems</h2>
+
+        <h3>How They Work</h3>
+        <p>Computer vision tracks ball and club through multiple cameras, processing visual movement data.</p>
+
+        <h3>Best Examples</h3>
+        <ul>
+          <li><strong>Uneekor EYE XO ($6,000-$8,000):</strong> Overhead camera system, no floor unit</li>
+          <li><strong>Full Swing KIT ($4,000-$6,000):</strong> Above/behind hybrid</li>
+          <li><strong>Garmin R10 ($600):</strong> Budget camera-radar hybrid</li>
+        </ul>
+
+        <h2>Recommended Setups by Scenario</h2>
+
+        <h3>Budget-Conscious ($500-$1,000)</h3>
+        <p><strong>Best choice:</strong> Garmin R10 or Rapsodo MLM2Pro</p>
+        <p><strong>Requirements:</strong> Controlled lighting, 8+ feet to screen, logo alignment</p>
+        <p><strong>GSPro performance:</strong> Adequate for recreational play, ball flight is believable</p>
+
+        <h3>Sweet Spot ($2,000-$4,000)</h3>
+        <p><strong>Best choice:</strong> SkyTrak+, Bushnell Launch Pro, or Mevo+</p>
+        <p><strong>Requirements:</strong> Moderate lighting control, 8-10 feet to screen</p>
+        <p><strong>GSPro performance:</strong> Excellent accuracy, realistic ball flight, great for serious practice</p>
+
+        <h3>No Compromises ($6,000+)</h3>
+        <p><strong>Best choice:</strong> Foresight GCQuad, Uneekor EYE XO, or Full Swing KIT</p>
+        <p><strong>Requirements:</strong> Proper setup space, good for any lighting</p>
+        <p><strong>GSPro performance:</strong> Professional-grade accuracy, full club and ball data, pristine experience</p>
+
+        <h2>Common Mistakes</h2>
+        <ul>
+          <li><strong>Choosing photometric for a garage with uncontrolled light:</strong> Sunlight changes through the day cause misreads</li>
+          <li><strong>Buying radar without adequate space:</strong> Need room for ball flight measurement</li>
+          <li><strong>Expecting club data from budget photometric:</strong> Ball-only units don't measure club path</li>
+          <li><strong>Not testing logo alignment patience:</strong> If logo positioning frustrates you, avoid units that require it</li>
+          <li><strong>Forgetting GSPro integration quality:</strong> Some units work better with GSPro than others</li>
+        </ul>
+
+        <h2>GSPro-Specific Considerations</h2>
+        <p>For GSPro's realistic physics, you need accurate:</p>
+        <ul>
+          <li><strong>Ball speed:</strong> All modern units handle this</li>
+          <li><strong>Launch angle:</strong> Critical for realistic trajectory</li>
+          <li><strong>Spin rate:</strong> Affects carry distance and rollout</li>
+          <li><strong>Spin axis:</strong> Determines draw/fade/slice/hook</li>
+        </ul>
+
+        <p>Club data improves practice feedback but doesn't affect GSPro ball flight quality.</p>
+
+        <h2>Quick Decision Checklist</h2>
+        <ul>
+          <li>☐ Budget range: $ _______</li>
+          <li>☐ Room lighting: Controlled / Variable / Outdoor</li>
+          <li>☐ Space depth: _______ feet to screen</li>
+          <li>☐ Logo alignment patience: High / Medium / Low</li>
+          <li>☐ Need club data: Yes / No / Nice to have</li>
+          <li>☐ Primary use: Practice / Play / Both</li>
+          <li>☐ Ceiling height allows overhead mount: Yes / No</li>
+          <li>☐ GSPro integration verified: Yes / No</li>
+        </ul>
+
+        <h2>Next Steps</h2>
+        <p>With your launch monitor selected, focus on setup and calibration. Proper alignment and lighting make a huge difference in read quality.</p>
+      `,
+    },
+  });
+
+  console.log("Seed completed successfully! Added 6 articles.");
 }
 
 main()
