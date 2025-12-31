@@ -72,8 +72,8 @@ export default async function HomePage() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-muted/50 to-background border-b">
-        <div className="container mx-auto px-4 py-12 md:py-16">
-          <div className="max-w-4xl mx-auto">
+        <div className="container px-4 py-12 md:py-16">
+          <div className="max-w-4xl">
             <Badge className="mb-4">{featuredArticle.category}</Badge>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
               {featuredArticle.title}
@@ -98,14 +98,14 @@ export default async function HomePage() {
 
       {/* Header Ad */}
       <div className="border-b bg-background">
-        <div className="container mx-auto px-4 py-4 flex justify-center">
+        <div className="container px-4 py-4 flex justify-center">
           <LeaderboardAd className="hidden md:flex" />
           <MobileBannerAd className="md:hidden" />
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="container px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Content Area */}
           <div className="lg:col-span-8 space-y-8">
@@ -165,7 +165,7 @@ export default async function HomePage() {
           {/* Sidebar */}
           <aside className="lg:col-span-4 space-y-6">
             {/* Desktop Skyscraper Ad */}
-            <div className="hidden lg:block sticky top-20">
+            <div className="hidden lg:block">
               <LargeSkyscraperAd className="mb-6" />
             </div>
 

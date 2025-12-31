@@ -33,7 +33,7 @@ export function LeaderboardAd({ className }: { className?: string }) {
 }
 
 export function LargeSkyscraperAd({ className }: { className?: string }) {
-  return <AdPlaceholder width={330} height={600} label="Large Skyscraper" className={className} />;
+  return <AdPlaceholder width={300} height={600} label="Large Skyscraper" className={className} />;
 }
 
 export function Leaderboard728Ad({ className }: { className?: string }) {

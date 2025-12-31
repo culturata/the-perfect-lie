@@ -25,20 +25,20 @@ export default async function CoursesPage() {
   }
 
   return (
-    <div className="container px-4 md:px-6 py-12 md:py-16">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="container px-4 py-12">
+      <div className="space-y-8">
         {/* Header */}
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <Badge variant="secondary">Course Directory</Badge>
             {total > 0 && (
-              <Badge variant="outline">{total} courses</Badge>
+              <Badge variant="outline">{total.toLocaleString()} courses</Badge>
             )}
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-bold">
             Browse GSPro Courses
           </h1>
-          <p className="text-muted-foreground max-w-2xl">
+          <p className="text-muted-foreground max-w-3xl">
             Discover thousands of GSPro courses from designers around the world.
             Search, filter, and sort to find the perfect course for your golf simulator.
           </p>
