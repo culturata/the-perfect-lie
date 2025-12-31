@@ -106,6 +106,13 @@ enum ResourceCategory {
   EQUIPMENT
   SOFTWARE
   COMMUNITY
+  ONLINE_PLAY
+  TOURNAMENTS
+  SIMULATOR_BUILDING
+  BEST_PRACTICES
+  TRAINING_AIDS
+  COURSE_DESIGN
+  STREAMING_TOOLS
 }
 
 model User {
@@ -115,6 +122,7 @@ model User {
   firstName String?
   lastName  String?
   avatarUrl String?
+  isBozo    Boolean @default(false) // Shadowbanned user (only they see their content)
 
   // Relationships
   favorites            Favorite[]
