@@ -152,6 +152,24 @@ model UserPreferences {
   updatedAt DateTime @updatedAt
 }
 
+model NewsletterSubscription {
+  id     String  @id @default(cuid())
+  email  String  @unique
+  userId String? @unique // Optional - for logged-in users
+  name   String? // Optional name
+
+  // Subscription status
+  isActive   Boolean @default(true)
+  isVerified Boolean @default(false) // For email verification if needed
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  unsubscribedAt DateTime?
+
+  @@index([email])
+  @@index([userId])
+}
+
 model Favorite {
   id       String @id @default(cuid())
   userId   String

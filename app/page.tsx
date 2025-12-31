@@ -4,7 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Calendar, ArrowRight, TrendingUp } from "lucide-react";
 import { LeaderboardAd, LargeSkyscraperAd, MediumRectangleAd, MobileBannerAd } from "@/components/ads/ad-placeholder";
+import { NewsletterWidget } from "@/components/newsletter/newsletter-widget";
 import { db } from "@/lib/db";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { getCurrentUserSubscription } from "@/app/actions/newsletter";
 
 // Mock article data - replace with actual CMS
 const featuredArticle = {
@@ -67,6 +70,12 @@ export default async function HomePage() {
 
   // Get course count
   const courseCount = await db.course.count();
+
+  // Check newsletter subscription status
+  const user = await currentUser();
+  const userEmail = user?.emailAddresses?.[0]?.emailAddress || null;
+  const subscription = await getCurrentUserSubscription();
+  const isSubscribed = !!subscription && subscription.isActive;
 
   return (
     <div className="min-h-screen">
@@ -203,6 +212,9 @@ export default async function HomePage() {
                 </Button>
               </CardContent>
             </Card>
+
+            {/* Newsletter Widget */}
+            <NewsletterWidget userEmail={userEmail} isSubscribed={isSubscribed} />
 
             {/* Quick Links */}
             <Card>
