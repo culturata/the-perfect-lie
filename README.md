@@ -39,6 +39,13 @@ A modern, full-stack Next.js application for the GSPro golf simulator community.
 - **Comment Editing**: Edit your comments with edit indicator
 - **Reply Threading**: Reply to any comment with visual thread structure
 
+### 📰 News & Articles
+- **Article-Focused Homepage**: Featured articles with hero section
+- **Content Categories**: Guides, Reviews, Interviews, Updates
+- **Clean Typography**: Optimized reading experience with prose styling
+- **Article Detail Pages**: Full articles with related content sidebar
+- **Minimal Design**: Text-focused cards with category badges
+
 ### 🛠️ Resource Hub
 - **12 Categories**:
   - Launch Monitors
@@ -84,6 +91,14 @@ A modern, full-stack Next.js application for the GSPro golf simulator community.
   - Maintains community quality without confrontation
   - Affects reviews, comments, and rating statistics
 
+### 🎨 Design & UX
+- **Fixed-Width Centered Layout**: Consistent 1280px max-width across all pages
+- **Minimal Clean Aesthetic**: Lots of whitespace, light background (98% white)
+- **Green Accent Color**: HSL(142, 76%, 36%) for buttons and highlights
+- **Responsive Design**: Mobile-first with breakpoints for tablet and desktop
+- **Ad Integration**: Non-intrusive ad placements (970x250, 300x600, 728x90, 300x250, 320x50)
+- **Sticky Navigation**: Header remains accessible on scroll
+
 ## Tech Stack
 
 - **Framework**: Next.js 15 (App Router)
@@ -96,6 +111,7 @@ A modern, full-stack Next.js application for the GSPro golf simulator community.
 - **Notifications**: Sonner (toast)
 - **Date Formatting**: date-fns
 - **Deployment**: Netlify
+- **CI/CD**: GitHub Actions for automated PR creation and merging
 
 ## Getting Started
 
@@ -229,6 +245,9 @@ To access admin features:
 
 ```
 the-perfect-lie/
+├── .github/
+│   └── workflows/
+│       └── claude-auto-pr.yml  # Auto PR creation/merge
 ├── app/
 │   ├── actions/              # Server actions
 │   │   ├── comments.ts       # Comment CRUD + filtering
@@ -244,10 +263,14 @@ the-perfect-lie/
 │   │   │   └── mentions/     # @mention autocomplete
 │   │   └── sync/             # Data synchronization
 │   ├── courses/              # Course pages
+│   ├── flyovers/             # Video flyovers
+│   ├── news/                 # News and articles
+│   │   └── [id]/             # Article detail pages
 │   ├── resources/            # Resource hub
 │   └── settings/             # User settings
 ├── components/
 │   ├── ui/                   # shadcn/ui components
+│   ├── ads/                  # Ad placeholder components
 │   ├── admin/                # Admin components
 │   ├── courses/              # Course components
 │   ├── reviews/              # Review components
@@ -396,6 +419,26 @@ npx prisma studio
 # Generate Prisma Client (after schema changes)
 npx prisma generate
 ```
+
+### GitHub Automation
+
+The repository includes automated PR creation and merging for Claude Code branches:
+
+**How it works:**
+1. Push to any `claude/**` branch
+2. GitHub Action automatically creates a PR
+3. PR is set to auto-merge (squash) to `main`
+4. Once checks pass, PR merges automatically
+
+**Configuration:**
+- Workflow: `.github/workflows/claude-auto-pr.yml`
+- Triggers on: `push` to `claude/**` branches
+- Merge strategy: Squash merge
+
+**GitHub Settings Required:**
+1. Go to **Settings** → **General** → Pull Requests
+2. Enable "Allow auto-merge"
+3. Enable "Allow squash merging"
 
 ### Building for Production
 
