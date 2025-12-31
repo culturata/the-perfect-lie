@@ -2,7 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Star } from "lucide-react";
-import { getResources, getCategoryLabel } from "@/app/actions/resources";
+import { getResources } from "@/app/actions/resources";
+import { getCategoryLabel } from "@/lib/resources";
 import { ResourceCategory } from "@prisma/client";
 import Link from "next/link";
 

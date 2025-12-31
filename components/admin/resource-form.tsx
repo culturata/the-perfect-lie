@@ -18,8 +18,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   createResource,
   updateResource,
-  getCategoryOptions,
 } from "@/app/actions/resources";
+import { getCategoryOptions } from "@/lib/resources";
 import { toast } from "sonner";
 import { ResourceCategory } from "@prisma/client";
 
