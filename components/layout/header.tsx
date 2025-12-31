@@ -21,6 +21,12 @@ export function Header() {
               Courses
             </Link>
             <Link
+              href="/flyovers"
+              className="flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+            >
+              Flyovers
+            </Link>
+            <Link
               href="/news"
               className="flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
             >
