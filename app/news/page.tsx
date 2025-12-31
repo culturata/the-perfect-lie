@@ -75,9 +75,9 @@ export default function NewsPage() {
       </div>
 
       {/* Two Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Content - 2/3 width on desktop */}
-        <div className="lg:col-span-2 space-y-8">
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Main Content - Flexible width on desktop */}
+        <div className="flex-1 min-w-0 space-y-8">
           {/* Featured Post */}
           <Card className="overflow-hidden">
             <div className="aspect-video bg-muted" />
@@ -138,8 +138,8 @@ export default function NewsPage() {
           </div>
         </div>
 
-        {/* Sidebar - 1/3 width on desktop */}
-        <div className="space-y-6">
+        {/* Sidebar - Fixed 300px width on desktop */}
+        <div className="w-full lg:w-[300px] lg:flex-shrink-0 space-y-6">
           {/* Skyscraper Ad - Desktop Only */}
           <div className="hidden lg:block">
             <LargeSkyscraperAd className="mb-6" />
