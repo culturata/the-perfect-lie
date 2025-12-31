@@ -115,9 +115,9 @@ export default async function HomePage() {
 
       {/* Main Content */}
       <div className="container px-4 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="flex flex-col lg:flex-row gap-8">
           {/* Main Content Area */}
-          <div className="flex-1 space-y-8">
+          <div className="flex-1 min-w-0 space-y-8">
             {/* Recent Articles */}
             <div>
               <div className="flex items-center justify-between mb-6">
