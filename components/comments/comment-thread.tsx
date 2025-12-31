@@ -5,6 +5,7 @@ import { formatDistanceToNow } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CommentForm } from "./comment-form";
+import { MentionContent } from "@/components/ui/mention-content";
 import { deleteComment } from "@/app/actions/comments";
 import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
@@ -119,7 +120,10 @@ function CommentItem({
               )}
             </div>
 
-            <p className="text-sm whitespace-pre-wrap">{comment.content}</p>
+            <MentionContent
+              content={comment.content}
+              className="text-sm whitespace-pre-wrap"
+            />
 
             {!isMaxDepth && (
               <Button

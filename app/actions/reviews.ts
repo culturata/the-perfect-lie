@@ -4,6 +4,8 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { syncUser } from "@/lib/user";
+import { parseMentions, getUserIdsFromMentions } from "@/lib/mentions";
+import { sendCommentReplyEmail } from "@/lib/email";
 
 export async function createReview({
   courseId,
@@ -38,7 +40,64 @@ export async function createReview({
         title,
         content,
       },
+      include: {
+        user: true,
+      },
     });
+
+    // Parse and handle mentions in review content
+    if (content) {
+      const mentions = parseMentions(content);
+      const mentionedUserIds = await getUserIdsFromMentions(mentions);
+
+      // Create notifications for mentioned users
+      for (const mentionedUserId of mentionedUserIds) {
+        if (mentionedUserId !== userId) {
+          await db.notification.create({
+            data: {
+              userId: mentionedUserId,
+              type: "MENTION",
+              title: "You were mentioned in a review",
+              message: `${review.user.firstName || "Someone"} mentioned you in a review`,
+              courseId,
+              reviewId: review.id,
+              triggeredBy: userId,
+            },
+          });
+
+          // Send email if user has mentions enabled
+          const mentionedUser = await db.user.findUnique({
+            where: { id: mentionedUserId },
+            include: { preferences: true },
+          });
+
+          const emailEnabled = mentionedUser?.preferences?.emailOnMention ?? true;
+
+          if (emailEnabled && mentionedUser?.email) {
+            const course = await db.course.findUnique({
+              where: { id: courseId },
+            });
+
+            if (course) {
+              const courseSlug = encodeURIComponent(
+                course.name.toLowerCase().replace(/\s+/g, "-")
+              );
+              const courseUrl = `${process.env.NEXT_PUBLIC_APP_URL}/courses/${courseSlug}#review-${review.id}`;
+
+              await sendCommentReplyEmail({
+                to: mentionedUser.email,
+                userName: mentionedUser.firstName || "there",
+                replierName: review.user.firstName || "Someone",
+                courseName: course.name,
+                commentContent: `mentioned you in a review`,
+                replyContent: content,
+                courseUrl,
+              });
+            }
+          }
+        }
+      }
+    }
 
     revalidatePath(`/courses/[slug]`);
     return { success: true, review };

@@ -6,6 +6,7 @@ import { StarRating } from "@/components/ui/star-rating";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ReviewForm } from "./review-form";
+import { MentionContent } from "@/components/ui/mention-content";
 import { deleteReview } from "@/app/actions/reviews";
 import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
@@ -122,9 +123,10 @@ export function ReviewList({ reviews }: ReviewListProps) {
               )}
 
               {review.content && (
-                <p className="text-muted-foreground whitespace-pre-wrap">
-                  {review.content}
-                </p>
+                <MentionContent
+                  content={review.content}
+                  className="text-muted-foreground whitespace-pre-wrap"
+                />
               )}
             </div>
           )}

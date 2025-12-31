@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { sendCommentReplyEmail } from "@/lib/email";
 import { syncUser } from "@/lib/user";
+import { parseMentions, getUserIdsFromMentions } from "@/lib/mentions";
 
 async function createNotification({
   userId,
@@ -75,6 +76,56 @@ export async function createComment({
         user: true,
       },
     });
+
+    // Parse and handle mentions
+    const mentions = parseMentions(content);
+    const mentionedUserIds = await getUserIdsFromMentions(mentions);
+
+    // Create notifications for mentioned users
+    for (const mentionedUserId of mentionedUserIds) {
+      if (mentionedUserId !== userId) {
+        await createNotification({
+          userId: mentionedUserId,
+          type: "MENTION",
+          title: "You were mentioned in a comment",
+          message: `${comment.user.firstName || "Someone"} mentioned you in a comment`,
+          courseId,
+          commentId: comment.id,
+          triggeredBy: userId,
+        });
+
+        // Send email if user has mentions enabled
+        const mentionedUser = await db.user.findUnique({
+          where: { id: mentionedUserId },
+          include: { preferences: true },
+        });
+
+        const emailEnabled = mentionedUser?.preferences?.emailOnMention ?? true;
+
+        if (emailEnabled && mentionedUser?.email) {
+          const course = await db.course.findUnique({
+            where: { id: courseId },
+          });
+
+          if (course) {
+            const courseSlug = encodeURIComponent(
+              course.name.toLowerCase().replace(/\s+/g, "-")
+            );
+            const courseUrl = `${process.env.NEXT_PUBLIC_APP_URL}/courses/${courseSlug}#comment-${comment.id}`;
+
+            await sendCommentReplyEmail({
+              to: mentionedUser.email,
+              userName: mentionedUser.firstName || "there",
+              replierName: comment.user.firstName || "Someone",
+              courseName: course.name,
+              commentContent: `mentioned you`,
+              replyContent: content,
+              courseUrl,
+            });
+          }
+        }
+      }
+    }
 
     // If this is a reply, create notification and maybe send email
     if (parentId) {
