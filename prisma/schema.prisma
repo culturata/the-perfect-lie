@@ -133,6 +133,12 @@ model User {
   triggeredNotifications Notification[]      @relation("NotificationTriggerer")
   preferences          UserPreferences?
   collections          Collection[]
+  tutorialComments     TutorialComment[]
+  tutorialRatings      TutorialRating[]
+  setupShowcases       SetupShowcase[]
+  setupComments        SetupComment[]
+  setupLikes           SetupLike[]
+  setupRatings         SetupRating[]
 
   // Metadata
   createdAt DateTime @default(now())
@@ -412,4 +418,202 @@ model CollectionItem {
 enum CollectionItemType {
   COURSE
   ARTICLE
+}
+
+// Course Design Tutorials
+model Tutorial {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String   @db.Text
+  content     String   @db.Text
+
+  // Tutorial attributes
+  difficulty   TutorialDifficulty
+  softwareRequired String[] // Array of software names (e.g., ["GSPro Course Designer", "Photoshop"])
+  toolsRequired    String[] // Array of tools/hardware needed
+  estimatedTime    String? // e.g., "2-4 hours"
+
+  // Media
+  videoUrl     String? // YouTube or other video embed
+  thumbnailUrl String?
+  images       String[] // Additional images for steps
+
+  // Prerequisites and related content
+  prerequisites String[] // Array of tutorial IDs that should be completed first
+  tags          String[] // Topics/tags (e.g., ["photogrammetry", "terrain", "3d-modeling"])
+
+  // Status
+  published   Boolean @default(false)
+  featured    Boolean @default(false)
+  order       Int     @default(0) // Display order
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+
+  // Stats
+  viewCount Int @default(0)
+
+  // Relationships
+  comments TutorialComment[]
+  ratings  TutorialRating[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  publishedAt DateTime?
+
+  @@index([difficulty])
+  @@index([slug])
+  @@index([published])
+}
+
+enum TutorialDifficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+model TutorialComment {
+  id         String  @id @default(cuid())
+  tutorialId String
+  userId     String
+  content    String  @db.Text
+
+  // Threading support
+  parentId String?
+  parent   TutorialComment?  @relation("TutorialCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  TutorialComment[] @relation("TutorialCommentReplies")
+
+  tutorial Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tutorialId])
+  @@index([userId])
+  @@index([parentId])
+}
+
+model TutorialRating {
+  id         String @id @default(cuid())
+  tutorialId String
+  userId     String
+  rating     Int // 1-5 stars
+
+  tutorial Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([tutorialId, userId])
+  @@index([tutorialId])
+}
+
+// Setup Showcase
+model SetupShowcase {
+  id          String  @id @default(cuid())
+  userId      String
+  title       String
+  description String  @db.Text
+
+  // Budget & Room Info
+  totalBudget   Int? // In USD
+  budgetTier    BudgetTier
+  roomWidth     Float? // In feet
+  roomDepth     Float? // In feet
+  ceilingHeight Float? // In feet
+  roomType      RoomType?
+
+  // Components
+  launchMonitor String? // Brand/model
+  projector     String? // Brand/model
+  screen        String? // Type/brand
+  pcSpecs       String? @db.Text // Detailed PC specs
+  hitting       String? // Mat/turf setup
+  other         String? @db.Text // Other components/notes
+
+  // Media
+  images       String[] // Array of image URLs
+  thumbnailUrl String? // Primary image
+
+  // Categorization
+  buildStyle BuildStyle?
+  tags       String[] // Additional tags
+
+  // Moderation & Status
+  approved Boolean @default(false) // Requires admin approval
+  featured Boolean @default(false)
+
+  // Community engagement
+  likeCount    Int @default(0)
+  commentCount Int @default(0)
+  viewCount    Int @default(0)
+
+  // Relationships
+  user     User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments SetupComment[]
+  likes    SetupLike[]
+  ratings  SetupRating[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([approved])
+  @@index([budgetTier])
+  @@index([featured])
+}
+
+model SetupComment {
+  id      String  @id @default(cuid())
+  setupId String
+  userId  String
+  content String  @db.Text
+
+  // Threading support
+  parentId String?
+  parent   SetupComment?  @relation("SetupCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  SetupComment[] @relation("SetupCommentReplies")
+
+  setup SetupShowcase @relation(fields: [setupId], references: [id], onDelete: Cascade)
+  user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([setupId])
+  @@index([userId])
+  @@index([parentId])
+}
+
+model SetupLike {
+  id      String @id @default(cuid())
+  setupId String
+  userId  String
+
+  setup SetupShowcase @relation(fields: [setupId], references: [id], onDelete: Cascade)
+  user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([setupId, userId])
+  @@index([setupId])
+  @@index([userId])
+}
+
+model SetupRating {
+  id      String @id @default(cuid())
+  setupId String
+  userId  String
+  rating  Int // 1-5 stars
+
+  setup SetupShowcase @relation(fields: [setupId], references: [id], onDelete: Cascade)
+  user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([setupId, userId])
+  @@index([setupId])
 }
