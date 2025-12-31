@@ -1,96 +1,18 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Heart, Eye, Star, DollarSign } from "lucide-react";
+import { Plus, Heart, Eye, Star, DollarSign, AlertCircle } from "lucide-react";
 import Link from "next/link";
-import { db } from "@/lib/db";
-import { BudgetTier, BuildStyle, RoomType } from "@prisma/client";
 import { currentUser } from "@clerk/nextjs/server";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export const metadata = {
   title: "Setup Showcase | GSPro Community",
   description: "Browse real golf simulator setups from the community. Get inspired by builds across all budgets and room sizes.",
 };
 
-async function getSetups() {
-  const setups = await db.setupShowcase.findMany({
-    where: { approved: true },
-    orderBy: [
-      { featured: "desc" },
-      { likeCount: "desc" },
-      { createdAt: "desc" },
-    ],
-    include: {
-      user: {
-        select: {
-          id: true,
-          username: true,
-          firstName: true,
-          lastName: true,
-          avatarUrl: true,
-        },
-      },
-      _count: {
-        select: {
-          comments: true,
-          likes: true,
-          ratings: true,
-        },
-      },
-    },
-    take: 50, // Limit initial load
-  });
-
-  // Calculate average ratings
-  const setupsWithRatings = await Promise.all(
-    setups.map(async (setup) => {
-      const avgRating = await db.setupRating.aggregate({
-        where: { setupId: setup.id },
-        _avg: { rating: true },
-      });
-
-      return {
-        ...setup,
-        averageRating: avgRating._avg.rating || 0,
-      };
-    })
-  );
-
-  return setupsWithRatings;
-}
-
-function getBudgetLabel(tier: BudgetTier): string {
-  const labels = {
-    STARTER: "$5k-$10k",
-    MID: "$10k-$25k",
-    PREMIUM: "$25k+",
-  };
-  return labels[tier];
-}
-
-function getBuildStyleLabel(style: BuildStyle): string {
-  const labels = {
-    DIY: "DIY",
-    HYBRID: "Hybrid",
-    TURNKEY: "Turnkey",
-  };
-  return labels[style];
-}
-
 export default async function SetupsPage() {
-  const setups = await getSetups();
   const user = await currentUser();
-
-  // Group setups by budget
-  const setupsByBudget = setups.reduce((acc, setup) => {
-    if (!acc[setup.budgetTier]) {
-      acc[setup.budgetTier] = [];
-    }
-    acc[setup.budgetTier].push(setup);
-    return acc;
-  }, {} as Record<BudgetTier, typeof setups>);
-
-  const featuredSetups = setups.filter((s) => s.featured);
 
   return (
     <div className="min-h-screen">
@@ -107,23 +29,18 @@ export default async function SetupsPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
               {user ? (
-                <Button size="lg" asChild>
-                  <Link href="/setups/new">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Share Your Setup
-                  </Link>
+                <Button size="lg" disabled>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Share Your Setup (Coming Soon)
                 </Button>
               ) : (
                 <Button size="lg" asChild>
                   <Link href="/sign-in">
                     <Plus className="mr-2 h-4 w-4" />
-                    Share Your Setup
+                    Sign In to Share
                   </Link>
                 </Button>
               )}
-              <Button size="lg" variant="outline" asChild>
-                <Link href="#all-setups">Browse All Setups</Link>
-              </Button>
             </div>
           </div>
         </div>
@@ -133,12 +50,12 @@ export default async function SetupsPage() {
       <section className="border-b bg-background">
         <div className="container px-4 py-6">
           <div className="flex flex-wrap gap-2 justify-center">
-            <Badge variant="outline" className="cursor-pointer hover:bg-muted">All Setups</Badge>
-            <Badge variant="outline" className="cursor-pointer hover:bg-muted">Starter ($5k-$10k)</Badge>
-            <Badge variant="outline" className="cursor-pointer hover:bg-muted">Mid-Range ($10k-$25k)</Badge>
-            <Badge variant="outline" className="cursor-pointer hover:bg-muted">Premium ($25k+)</Badge>
-            <Badge variant="outline" className="cursor-pointer hover:bg-muted">DIY</Badge>
-            <Badge variant="outline" className="cursor-pointer hover:bg-muted">Turnkey</Badge>
+            <Badge variant="outline">All Setups</Badge>
+            <Badge variant="outline">Starter ($5k-$10k)</Badge>
+            <Badge variant="outline">Mid-Range ($10k-$25k)</Badge>
+            <Badge variant="outline">Premium ($25k+)</Badge>
+            <Badge variant="outline">DIY</Badge>
+            <Badge variant="outline">Turnkey</Badge>
           </div>
         </div>
       </section>
@@ -146,270 +63,124 @@ export default async function SetupsPage() {
       {/* Main Content */}
       <div className="container px-4 py-12">
         <div className="max-w-7xl mx-auto space-y-16">
-          {/* Featured Setups */}
-          {featuredSetups.length > 0 && (
-            <section className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold">Featured Setups</h2>
-                <p className="text-muted-foreground text-lg">
-                  Handpicked examples of exceptional simulator builds
-                </p>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {featuredSetups.map((setup) => (
-                  <Card key={setup.id} className="hover:shadow-lg transition-shadow overflow-hidden">
-                    <div className="aspect-video relative overflow-hidden bg-muted">
-                      {setup.thumbnailUrl ? (
-                        <img
-                          src={setup.thumbnailUrl}
-                          alt={setup.title}
-                          className="object-cover w-full h-full"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                          No image
-                        </div>
-                      )}
-                      <div className="absolute top-2 right-2">
-                        <Badge className="bg-primary text-primary-foreground">Featured</Badge>
-                      </div>
-                    </div>
-                    <CardHeader>
-                      <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="outline">
-                          {getBudgetLabel(setup.budgetTier)}
-                        </Badge>
-                        {setup.buildStyle && (
-                          <Badge variant="outline">
-                            {getBuildStyleLabel(setup.buildStyle)}
-                          </Badge>
-                        )}
-                      </div>
-                      <CardTitle className="text-lg leading-tight">
-                        <Link href={`/setups/${setup.id}`} className="hover:text-primary transition-colors">
-                          {setup.title}
-                        </Link>
-                      </CardTitle>
-                      <CardDescription>
-                        by {setup.user.username || setup.user.firstName}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                        {setup.description}
-                      </p>
-                      <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
-                        <span className="flex items-center gap-1">
-                          <Heart className="h-4 w-4" />
-                          {setup.likeCount}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Eye className="h-4 w-4" />
-                          {setup.viewCount}
-                        </span>
-                        {setup._count.ratings > 0 && (
-                          <span className="flex items-center gap-1">
-                            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                            {setup.averageRating.toFixed(1)}
-                          </span>
-                        )}
-                      </div>
-                      <Button variant="ghost" size="sm" asChild className="w-full">
-                        <Link href={`/setups/${setup.id}`}>
-                          View Setup
-                        </Link>
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </section>
-          )}
+          {/* Coming Soon Alert */}
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Coming Soon!</AlertTitle>
+            <AlertDescription>
+              Setup Showcase is currently being set up. Soon you'll be able to browse and share real golf simulator builds from the community.
+              <br /><br />
+              What you'll find here:
+              <ul className="list-disc list-inside mt-2 space-y-1">
+                <li>Detailed photos and specs of real simulator builds</li>
+                <li>Budget breakdowns and component lists</li>
+                <li>Room dimension and space requirements</li>
+                <li>DIY tips and professional installation insights</li>
+                <li>Community ratings and feedback</li>
+              </ul>
+            </AlertDescription>
+          </Alert>
 
-          {/* All Setups by Budget */}
-          <section id="all-setups" className="space-y-12">
+          {/* Preview Section */}
+          <section className="space-y-8">
             <div className="space-y-2">
-              <h2 className="text-3xl font-bold">All Setups</h2>
+              <h2 className="text-3xl font-bold">Browse by Budget</h2>
               <p className="text-muted-foreground text-lg">
-                Browse setups organized by budget tier
+                Find setups that match your budget and space
               </p>
             </div>
 
-            {/* Starter Builds */}
-            {setupsByBudget["STARTER"] && setupsByBudget["STARTER"].length > 0 && (
-              <div className="space-y-6">
-                <div className="flex items-center gap-3">
-                  <DollarSign className="h-6 w-6 text-green-600" />
-                  <h3 className="text-2xl font-bold">Starter Builds ($5k-$10k)</h3>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {setupsByBudget["STARTER"].map((setup) => (
-                    <Card key={setup.id} className="hover:shadow-md transition-shadow overflow-hidden">
-                      <div className="aspect-video relative overflow-hidden bg-muted">
-                        {setup.thumbnailUrl ? (
-                          <img
-                            src={setup.thumbnailUrl}
-                            alt={setup.title}
-                            className="object-cover w-full h-full"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                            No image
-                          </div>
-                        )}
-                      </div>
-                      <CardHeader>
-                        <CardTitle className="text-base leading-tight">
-                          <Link href={`/setups/${setup.id}`} className="hover:text-primary transition-colors">
-                            {setup.title}
-                          </Link>
-                        </CardTitle>
-                        <CardDescription className="text-sm">
-                          by {setup.user.username || setup.user.firstName}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex items-center justify-between text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Heart className="h-3 w-3" />
-                            {setup.likeCount}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Eye className="h-3 w-3" />
-                            {setup.viewCount}
-                          </span>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Starter Builds */}
+              <Card className="border-2">
+                <CardHeader>
+                  <div className="flex items-center gap-2 mb-2">
+                    <DollarSign className="h-5 w-5 text-green-600" />
+                    <Badge variant="outline" className="text-green-600">$5k-$10k</Badge>
+                  </div>
+                  <CardTitle>Starter Builds</CardTitle>
+                  <CardDescription>
+                    Great entry-level setups that deliver excellent value
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="text-sm space-y-2 text-muted-foreground">
+                    <li>• Budget launch monitors (MLM2PRO, Garmin)</li>
+                    <li>• Projector or TV display options</li>
+                    <li>• DIY screen and enclosure builds</li>
+                    <li>• Compact space solutions</li>
+                  </ul>
+                </CardContent>
+              </Card>
 
-            {/* Mid-Range Builds */}
-            {setupsByBudget["MID"] && setupsByBudget["MID"].length > 0 && (
-              <div className="space-y-6">
-                <div className="flex items-center gap-3">
-                  <DollarSign className="h-6 w-6 text-yellow-600" />
-                  <h3 className="text-2xl font-bold">Mid-Range Builds ($10k-$25k)</h3>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {setupsByBudget["MID"].map((setup) => (
-                    <Card key={setup.id} className="hover:shadow-md transition-shadow overflow-hidden">
-                      <div className="aspect-video relative overflow-hidden bg-muted">
-                        {setup.thumbnailUrl ? (
-                          <img
-                            src={setup.thumbnailUrl}
-                            alt={setup.title}
-                            className="object-cover w-full h-full"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                            No image
-                          </div>
-                        )}
-                      </div>
-                      <CardHeader>
-                        <CardTitle className="text-base leading-tight">
-                          <Link href={`/setups/${setup.id}`} className="hover:text-primary transition-colors">
-                            {setup.title}
-                          </Link>
-                        </CardTitle>
-                        <CardDescription className="text-sm">
-                          by {setup.user.username || setup.user.firstName}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex items-center justify-between text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Heart className="h-3 w-3" />
-                            {setup.likeCount}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Eye className="h-3 w-3" />
-                            {setup.viewCount}
-                          </span>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
+              {/* Mid-Range Builds */}
+              <Card className="border-2">
+                <CardHeader>
+                  <div className="flex items-center gap-2 mb-2">
+                    <DollarSign className="h-5 w-5 text-yellow-600" />
+                    <Badge variant="outline" className="text-yellow-600">$10k-$25k</Badge>
+                  </div>
+                  <CardTitle>Mid-Range Builds</CardTitle>
+                  <CardDescription>
+                    Well-balanced setups with quality components
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="text-sm space-y-2 text-muted-foreground">
+                    <li>• Uneekor, SkyTrak+, or Bushnell LMs</li>
+                    <li>• Quality projectors (Optoma, BenQ)</li>
+                    <li>• Professional-grade screens</li>
+                    <li>• Dedicated simulator space</li>
+                  </ul>
+                </CardContent>
+              </Card>
 
-            {/* Premium Builds */}
-            {setupsByBudget["PREMIUM"] && setupsByBudget["PREMIUM"].length > 0 && (
-              <div className="space-y-6">
-                <div className="flex items-center gap-3">
-                  <DollarSign className="h-6 w-6 text-purple-600" />
-                  <h3 className="text-2xl font-bold">Premium Builds ($25k+)</h3>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {setupsByBudget["PREMIUM"].map((setup) => (
-                    <Card key={setup.id} className="hover:shadow-md transition-shadow overflow-hidden">
-                      <div className="aspect-video relative overflow-hidden bg-muted">
-                        {setup.thumbnailUrl ? (
-                          <img
-                            src={setup.thumbnailUrl}
-                            alt={setup.title}
-                            className="object-cover w-full h-full"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                            No image
-                          </div>
-                        )}
-                      </div>
-                      <CardHeader>
-                        <CardTitle className="text-base leading-tight">
-                          <Link href={`/setups/${setup.id}`} className="hover:text-primary transition-colors">
-                            {setup.title}
-                          </Link>
-                        </CardTitle>
-                        <CardDescription className="text-sm">
-                          by {setup.user.username || setup.user.firstName}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex items-center justify-between text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Heart className="h-3 w-3" />
-                            {setup.likeCount}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Eye className="h-3 w-3" />
-                            {setup.viewCount}
-                          </span>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
+              {/* Premium Builds */}
+              <Card className="border-2">
+                <CardHeader>
+                  <div className="flex items-center gap-2 mb-2">
+                    <DollarSign className="h-5 w-5 text-purple-600" />
+                    <Badge variant="outline" className="text-purple-600">$25k+</Badge>
+                  </div>
+                  <CardTitle>Premium Builds</CardTitle>
+                  <CardDescription>
+                    Top-tier setups with the best equipment
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="text-sm space-y-2 text-muted-foreground">
+                    <li>• TrackMan, GC Quad, or Foresight</li>
+                    <li>• 4K laser projectors</li>
+                    <li>• Custom enclosures and flooring</li>
+                    <li>• Complete room builds</li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
 
-            {setups.length === 0 && (
-              <div className="text-center py-12 border rounded-lg bg-muted/30">
-                <p className="text-muted-foreground text-lg mb-4">
-                  No setups have been shared yet.
+          {/* Call to Action */}
+          <section className="border-t pt-12">
+            <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+              <CardHeader>
+                <CardTitle className="text-2xl">Want to Share Your Build?</CardTitle>
+                <CardDescription className="text-base">
+                  Help others by showcasing your golf simulator setup
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">
+                  Once this feature launches, you'll be able to share your setup with detailed photos,
+                  component lists, budget information, and build tips. Your build could inspire and help
+                  others planning their own simulators!
                 </p>
-                <p className="text-sm text-muted-foreground mb-6">
-                  Be the first to showcase your golf simulator build!
-                </p>
-                {user ? (
+                {!user && (
                   <Button asChild>
-                    <Link href="/setups/new">
-                      <Plus className="mr-2 h-4 w-4" />
-                      Share Your Setup
-                    </Link>
-                  </Button>
-                ) : (
-                  <Button asChild>
-                    <Link href="/sign-in">Sign In to Share</Link>
+                    <Link href="/sign-in">Sign In to Get Ready</Link>
                   </Button>
                 )}
-              </div>
-            )}
+              </CardContent>
+            </Card>
           </section>
         </div>
       </div>
