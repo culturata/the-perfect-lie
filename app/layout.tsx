@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Toaster } from "sonner";
+import { AdhesiveAd } from "@/components/ads/adhesive-ad";
 
 export const metadata: Metadata = {
   title: "The Perfect Lie - GSPro Community Hub",
@@ -21,9 +22,10 @@ export default function RootLayout({
         <body className="font-sans antialiased">
           <div className="relative flex min-h-screen flex-col">
             <Header />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1 pb-24">{children}</main>
             <Footer />
           </div>
+          <AdhesiveAd />
           <Toaster />
         </body>
       </html>
