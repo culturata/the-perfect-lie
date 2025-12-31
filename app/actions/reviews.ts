@@ -218,17 +218,14 @@ export async function getCourseRatingStats(courseId: string) {
   try {
     const reviews = await db.review.findMany({
       where: { courseId },
-      include: {
+      select: {
+        rating: true,
         user: {
           select: {
             id: true,
             isBozo: true,
           },
         },
-      },
-      select: {
-        rating: true,
-        user: true,
       },
     });
 
