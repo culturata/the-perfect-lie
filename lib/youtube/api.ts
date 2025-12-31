@@ -82,6 +82,39 @@ export async function fetchPlaylistVideos(
 }
 
 /**
+ * Fetch ALL videos from a playlist (automatically paginating through all pages)
+ */
+export async function fetchAllPlaylistVideos(
+  playlistId: string
+): Promise<YouTubeVideo[]> {
+  const allVideos: YouTubeVideo[] = [];
+  let nextPageToken: string | undefined = undefined;
+  let pageCount = 0;
+
+  console.log(`Fetching all videos from playlist ${playlistId}...`);
+
+  do {
+    const response = await fetchPlaylistVideos(playlistId, 50, nextPageToken);
+    allVideos.push(...response.videos);
+    nextPageToken = response.nextPageToken;
+    pageCount++;
+
+    console.log(
+      `Fetched page ${pageCount}: ${response.videos.length} videos (total: ${allVideos.length}/${response.totalResults})`
+    );
+
+    // Add a small delay to respect rate limits
+    if (nextPageToken) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+  } while (nextPageToken);
+
+  console.log(`✓ Fetched all ${allVideos.length} videos from playlist`);
+
+  return allVideos;
+}
+
+/**
  * Fetch video details including statistics
  */
 export async function fetchVideoDetails(videoIds: string[]) {
