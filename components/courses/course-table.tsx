@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
   TableBody,
@@ -29,7 +28,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { ArrowUpDown, ArrowUp, ArrowDown, Search, Filter, Settings2, Eye, EyeOff } from "lucide-react";
+import { ArrowUpDown, ArrowUp, ArrowDown, Search, Filter, Settings2 } from "lucide-react";
 
 // Server to Patreon URL mapping
 const SERVER_URLS: Record<string, string> = {
@@ -72,18 +71,17 @@ export function CourseTable({ courses }: CourseTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [designerFilter, setDesignerFilter] = useState<string>("all");
   const [serverFilter, setServerFilter] = useState<string>("all");
-  const [hideBeta, setHideBeta] = useState(false);
   const [sortField, setSortField] = useState<SortField>("lastUpdated");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
   // Column visibility configuration
   const [columns, setColumns] = useState<ColumnConfig[]>([
     { key: "name", label: "Course Name", visible: true, sortable: true },
-    { key: "designer", label: "Designer", visible: true, sortable: true, responsive: "hidden md:table-cell" },
-    { key: "location", label: "Location", visible: true, sortable: true, responsive: "hidden lg:table-cell" },
-    { key: "server", label: "Server", visible: true, sortable: true, responsive: "hidden lg:table-cell" },
-    { key: "version", label: "Version", visible: true, sortable: true, responsive: "hidden xl:table-cell" },
-    { key: "lastUpdated", label: "Updated", visible: true, sortable: true },
+    { key: "designer", label: "Designer", visible: true, sortable: true },
+    { key: "location", label: "Location", visible: true, sortable: true, responsive: "hidden md:table-cell" },
+    { key: "server", label: "Server", visible: true, sortable: true, responsive: "hidden md:table-cell" },
+    { key: "version", label: "Version", visible: true, sortable: true, responsive: "hidden lg:table-cell" },
+    { key: "lastUpdated", label: "Updated", visible: true, sortable: true, responsive: "hidden md:table-cell" },
   ]);
 
   // Toggle column visibility
@@ -142,13 +140,6 @@ export function CourseTable({ courses }: CourseTableProps) {
       filtered = filtered.filter((course) => course.server === serverFilter);
     }
 
-    // Hide beta courses filter
-    if (hideBeta) {
-      filtered = filtered.filter(
-        (course) => course.server?.toLowerCase() !== "beta"
-      );
-    }
-
     // Sort
     if (sortField && sortDirection) {
       filtered = [...filtered].sort((a, b) => {
@@ -178,7 +169,7 @@ export function CourseTable({ courses }: CourseTableProps) {
     }
 
     return filtered;
-  }, [courses, searchTerm, designerFilter, serverFilter, hideBeta, sortField, sortDirection]);
+  }, [courses, searchTerm, designerFilter, serverFilter, sortField, sortDirection]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -211,102 +202,83 @@ export function CourseTable({ courses }: CourseTableProps) {
   };
 
   const visibleColumns = columns.filter((col) => col.visible);
-  const betaCount = courses.filter((c) => c.server?.toLowerCase() === "beta").length;
 
   return (
     <div className="space-y-4">
       {/* Filters - Single Line */}
-      <div className="flex flex-col lg:flex-row gap-3 items-start lg:items-center">
-        {/* Search Box - Smaller Width */}
-        <div className="relative w-full lg:max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search courses, designers, locations, server, version..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
+      <div className="flex flex-col md:flex-row gap-3 items-start md:items-center md:justify-between">
+        <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center w-full md:w-auto">
+          {/* Search Box */}
+          <div className="relative w-full sm:w-80">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search courses, designers, locations..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+
+          {/* Filters */}
+          <div className="flex gap-2 items-center">
+            <Select value={designerFilter} onValueChange={setDesignerFilter}>
+              <SelectTrigger className="w-[160px]">
+                <Filter className="mr-2 h-4 w-4" />
+                <SelectValue placeholder="Designer" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Designers</SelectItem>
+                {designers.map((designer) => (
+                  <SelectItem key={designer} value={designer}>
+                    {designer}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={serverFilter} onValueChange={setServerFilter}>
+              <SelectTrigger className="w-[140px]">
+                <Filter className="mr-2 h-4 w-4" />
+                <SelectValue placeholder="Server" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Servers</SelectItem>
+                {servers.map((server) => (
+                  <SelectItem key={server} value={server}>
+                    {server}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Column Customizer */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Settings2 className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>Toggle Columns</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {columns.map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.key}
+                    checked={column.visible}
+                    onCheckedChange={() => toggleColumn(column.key)}
+                    disabled={column.key === "name"} // Always show name
+                  >
+                    {column.label}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
 
-        {/* Filters Row */}
-        <div className="flex flex-wrap gap-2 items-center">
-          <Select value={designerFilter} onValueChange={setDesignerFilter}>
-            <SelectTrigger className="w-[180px]">
-              <Filter className="mr-2 h-4 w-4" />
-              <SelectValue placeholder="Designer" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Designers</SelectItem>
-              {designers.map((designer) => (
-                <SelectItem key={designer} value={designer}>
-                  {designer}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={serverFilter} onValueChange={setServerFilter}>
-            <SelectTrigger className="w-[160px]">
-              <Filter className="mr-2 h-4 w-4" />
-              <SelectValue placeholder="Server" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Servers</SelectItem>
-              {servers.map((server) => (
-                <SelectItem key={server} value={server}>
-                  {server}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Column Customizer */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                <Settings2 className="mr-2 h-4 w-4" />
-                Columns
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Toggle Columns</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {columns.map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.key}
-                  checked={column.visible}
-                  onCheckedChange={() => toggleColumn(column.key)}
-                  disabled={column.key === "name"} // Always show name
-                >
-                  {column.label}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {/* Beta Toggle */}
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="hide-beta"
-              checked={hideBeta}
-              onCheckedChange={(checked) => setHideBeta(checked === true)}
-            />
-            <label
-              htmlFor="hide-beta"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer select-none whitespace-nowrap"
-            >
-              {hideBeta ? <EyeOff className="inline h-4 w-4 mr-1" /> : <Eye className="inline h-4 w-4 mr-1" />}
-              Hide Beta
-              <Badge variant="secondary" className="ml-1">
-                {betaCount}
-              </Badge>
-            </label>
-          </div>
-
-          {/* Results Count */}
-          <div className="text-sm text-muted-foreground whitespace-nowrap">
-            Showing {filteredAndSortedCourses.length} of {courses.length} courses
-          </div>
+        {/* Results Count - Right aligned */}
+        <div className="text-sm text-muted-foreground whitespace-nowrap">
+          Showing {filteredAndSortedCourses.length} of {courses.length} courses
         </div>
       </div>
 
