@@ -80,7 +80,7 @@ export function CourseTable({ courses }: CourseTableProps) {
     { key: "designer", label: "Designer", visible: true, sortable: true },
     { key: "location", label: "Location", visible: true, sortable: true, responsive: "hidden md:table-cell" },
     { key: "server", label: "Server", visible: true, sortable: true, responsive: "hidden md:table-cell" },
-    { key: "version", label: "Version", visible: true, sortable: true, responsive: "hidden lg:table-cell" },
+    { key: "version", label: "Version", visible: false, sortable: true, responsive: "hidden lg:table-cell" },
     { key: "lastUpdated", label: "Updated", visible: true, sortable: true, responsive: "hidden md:table-cell" },
   ]);
 
@@ -209,10 +209,10 @@ export function CourseTable({ courses }: CourseTableProps) {
       <div className="flex flex-col md:flex-row gap-3 items-start md:items-center md:justify-between">
         <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center w-full md:w-auto">
           {/* Search Box */}
-          <div className="relative w-full sm:w-80">
+          <div className="relative w-full sm:w-60">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search courses, designers, locations..."
+              placeholder="Search courses..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -222,8 +222,8 @@ export function CourseTable({ courses }: CourseTableProps) {
           {/* Filters */}
           <div className="flex gap-2 items-center">
             <Select value={designerFilter} onValueChange={setDesignerFilter}>
-              <SelectTrigger className="w-[160px]">
-                <Filter className="mr-2 h-4 w-4" />
+              <SelectTrigger className="w-[130px]">
+                <Filter className="mr-1 h-4 w-4" />
                 <SelectValue placeholder="Designer" />
               </SelectTrigger>
               <SelectContent>
@@ -237,8 +237,8 @@ export function CourseTable({ courses }: CourseTableProps) {
             </Select>
 
             <Select value={serverFilter} onValueChange={setServerFilter}>
-              <SelectTrigger className="w-[140px]">
-                <Filter className="mr-2 h-4 w-4" />
+              <SelectTrigger className="w-[120px]">
+                <Filter className="mr-1 h-4 w-4" />
                 <SelectValue placeholder="Server" />
               </SelectTrigger>
               <SelectContent>
@@ -254,7 +254,7 @@ export function CourseTable({ courses }: CourseTableProps) {
             {/* Column Customizer */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="px-2">
                   <Settings2 className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -277,8 +277,8 @@ export function CourseTable({ courses }: CourseTableProps) {
         </div>
 
         {/* Results Count - Right aligned */}
-        <div className="text-sm text-muted-foreground whitespace-nowrap">
-          Showing {filteredAndSortedCourses.length} of {courses.length} courses
+        <div className="text-sm text-muted-foreground whitespace-nowrap ml-auto">
+          {filteredAndSortedCourses.length} of {courses.length}
         </div>
       </div>
 
@@ -287,25 +287,37 @@ export function CourseTable({ courses }: CourseTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              {visibleColumns.map((column) => (
-                <TableHead
-                  key={column.key}
-                  className={column.responsive || ""}
-                >
-                  {column.sortable ? (
-                    <Button
-                      variant="ghost"
-                      onClick={() => handleSort(column.key as SortField)}
-                      className="hover:bg-transparent p-0 h-auto font-semibold whitespace-nowrap"
-                    >
-                      {column.label}
-                      <SortIcon field={column.key as SortField} />
-                    </Button>
-                  ) : (
-                    <span className="font-semibold">{column.label}</span>
-                  )}
-                </TableHead>
-              ))}
+              {visibleColumns.map((column) => {
+                // Define column widths for 980px layout
+                const columnWidths: Record<string, string> = {
+                  name: "min-w-[200px]",
+                  designer: "w-[140px]",
+                  location: "w-[130px]",
+                  server: "w-[110px]",
+                  version: "w-[80px]",
+                  lastUpdated: "w-[110px]",
+                };
+
+                return (
+                  <TableHead
+                    key={column.key}
+                    className={`${column.responsive || ""} ${columnWidths[column.key] || ""}`}
+                  >
+                    {column.sortable ? (
+                      <Button
+                        variant="ghost"
+                        onClick={() => handleSort(column.key as SortField)}
+                        className="hover:bg-transparent p-0 h-auto font-semibold whitespace-nowrap"
+                      >
+                        {column.label}
+                        <SortIcon field={column.key as SortField} />
+                      </Button>
+                    ) : (
+                      <span className="font-semibold">{column.label}</span>
+                    )}
+                  </TableHead>
+                );
+              })}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -314,21 +326,33 @@ export function CourseTable({ courses }: CourseTableProps) {
                 course.name.toLowerCase().replace(/\s+/g, "-")
               );
               const updateDate = new Date(course.lastUpdated).toLocaleDateString("en-US", {
-                year: "numeric",
                 month: "short",
                 day: "numeric",
+                year: "2-digit",
               });
+
+              // Define column widths matching headers
+              const columnWidths: Record<string, string> = {
+                name: "min-w-[200px]",
+                designer: "w-[140px]",
+                location: "w-[130px]",
+                server: "w-[110px]",
+                version: "w-[80px]",
+                lastUpdated: "w-[110px]",
+              };
 
               return (
                 <TableRow key={course.id} className="cursor-pointer hover:bg-muted/50">
                   {visibleColumns.map((column) => {
+                    const baseClass = `${column.responsive || ""} ${columnWidths[column.key] || ""}`;
+
                     // Render each column based on its key
                     if (column.key === "name") {
                       return (
-                        <TableCell key="name" className={column.responsive || ""}>
+                        <TableCell key="name" className={baseClass}>
                           <Link
                             href={`/courses/${slug}`}
-                            className="font-medium hover:text-primary hover:underline whitespace-nowrap"
+                            className="font-medium hover:text-primary hover:underline"
                           >
                             {course.name}
                           </Link>
@@ -338,12 +362,13 @@ export function CourseTable({ courses }: CourseTableProps) {
 
                     if (column.key === "designer") {
                       return (
-                        <TableCell key="designer" className={column.responsive || ""}>
+                        <TableCell key="designer" className={`${baseClass} truncate`}>
                           {course.designer ? (
                             <Link
                               href={`/designers/${encodeURIComponent(course.designer)}`}
-                              className="text-muted-foreground hover:text-primary hover:underline whitespace-nowrap"
+                              className="text-muted-foreground hover:text-primary hover:underline block truncate"
                               onClick={(e) => e.stopPropagation()}
+                              title={course.designer}
                             >
                               {course.designer}
                             </Link>
@@ -356,7 +381,7 @@ export function CourseTable({ courses }: CourseTableProps) {
 
                     if (column.key === "location") {
                       return (
-                        <TableCell key="location" className={`text-muted-foreground ${column.responsive || ""}`}>
+                        <TableCell key="location" className={`text-muted-foreground text-sm ${baseClass} truncate`} title={course.location || undefined}>
                           {course.location || "—"}
                         </TableCell>
                       );
@@ -366,7 +391,7 @@ export function CourseTable({ courses }: CourseTableProps) {
                       const serverUrl = course.server ? SERVER_URLS[course.server] : null;
 
                       return (
-                        <TableCell key="server" className={column.responsive || ""}>
+                        <TableCell key="server" className={baseClass}>
                           {course.server ? (
                             serverUrl ? (
                               <a
@@ -378,7 +403,7 @@ export function CourseTable({ courses }: CourseTableProps) {
                               >
                                 <Badge
                                   variant={course.server.toLowerCase() === "beta" ? "destructive" : "secondary"}
-                                  className="whitespace-nowrap cursor-pointer"
+                                  className="whitespace-nowrap cursor-pointer text-xs"
                                 >
                                   {course.server}
                                 </Badge>
@@ -386,7 +411,7 @@ export function CourseTable({ courses }: CourseTableProps) {
                             ) : (
                               <Badge
                                 variant={course.server.toLowerCase() === "beta" ? "destructive" : "secondary"}
-                                className="whitespace-nowrap"
+                                className="whitespace-nowrap text-xs"
                               >
                                 {course.server}
                               </Badge>
@@ -400,7 +425,7 @@ export function CourseTable({ courses }: CourseTableProps) {
 
                     if (column.key === "version") {
                       return (
-                        <TableCell key="version" className={`text-muted-foreground text-sm ${column.responsive || ""}`}>
+                        <TableCell key="version" className={`text-muted-foreground text-sm ${baseClass}`}>
                           {course.version || "—"}
                         </TableCell>
                       );
@@ -408,7 +433,7 @@ export function CourseTable({ courses }: CourseTableProps) {
 
                     if (column.key === "lastUpdated") {
                       return (
-                        <TableCell key="lastUpdated" className={`text-muted-foreground text-sm whitespace-nowrap ${column.responsive || ""}`}>
+                        <TableCell key="lastUpdated" className={`text-muted-foreground text-sm ${baseClass}`}>
                           {updateDate}
                         </TableCell>
                       );
