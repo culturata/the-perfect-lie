@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { db } from "@/lib/db";
-import { Calendar, User, MapPin, Star } from "lucide-react";
+import { Calendar, User, MapPin, Star, ArrowRight, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ReviewForm } from "@/components/reviews/review-form";
@@ -9,8 +9,12 @@ import { ReviewList } from "@/components/reviews/review-list";
 import { CommentForm } from "@/components/comments/comment-form";
 import { CommentThread } from "@/components/comments/comment-thread";
 import { getCourseRatingStats } from "@/app/actions/reviews";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { StarRating } from "@/components/ui/star-rating";
+import { LeaderboardAd, MobileBannerAd, MediumRectangleAd } from "@/components/ads/ad-placeholder";
+import { NewsletterWidget } from "@/components/newsletter/newsletter-widget";
+import { getCurrentUserSubscription } from "@/app/actions/newsletter";
+import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
 
@@ -77,6 +81,31 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
   // Check if user has already reviewed this course
   const userReview = reviews.find((review) => review.user.id === userId);
+
+  // Fetch other courses by the same designer
+  const designerCourses = course.designer
+    ? await db.course.findMany({
+        where: {
+          designer: course.designer,
+          id: { not: course.id }, // Exclude current course
+        },
+        take: 5,
+        orderBy: { lastUpdated: "desc" },
+        select: {
+          id: true,
+          name: true,
+          designer: true,
+          server: true,
+          lastUpdated: true,
+        },
+      })
+    : [];
+
+  // Check newsletter subscription status
+  const user = await currentUser();
+  const userEmail = user?.emailAddresses?.[0]?.emailAddress || null;
+  const subscription = await getCurrentUserSubscription();
+  const isSubscribed = !!subscription && subscription.isActive;
 
   // Fetch top-level comments (comments without a parent)
   const topLevelComments = await db.comment.findMany({
@@ -154,9 +183,18 @@ export default async function CoursePage({ params }: CoursePageProps) {
   });
 
   return (
-    <div className="container px-4 md:px-6 py-12 md:py-16">
-      <div className="max-w-5xl mx-auto space-y-8">
-          {/* Header */}
+    <div className="min-h-screen">
+      {/* Header Ad */}
+      <div className="border-b bg-background">
+        <div className="container px-4 py-4 flex justify-center">
+          <LeaderboardAd className="hidden md:flex" />
+          <MobileBannerAd className="md:hidden" />
+        </div>
+      </div>
+
+      {/* Header Section */}
+      <div className="border-b bg-muted/30">
+        <div className="container px-4 py-8">
           <div className="space-y-4">
             <Link
               href="/courses"
@@ -192,6 +230,14 @@ export default async function CoursePage({ params }: CoursePageProps) {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="container px-4 py-12">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Main Content Area */}
+          <div className="flex-1 min-w-0 space-y-8">
 
         {/* Rating Summary */}
         <Card>
@@ -406,6 +452,62 @@ export default async function CoursePage({ params }: CoursePageProps) {
             )}
           </CardContent>
         </Card>
+
+            {/* Mobile Rectangle Ad */}
+            <div className="lg:hidden flex justify-center py-4">
+              <MediumRectangleAd />
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <aside className="w-full lg:w-[300px] flex-shrink-0 space-y-6">
+            {/* More by Designer */}
+            {designerCourses.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5" />
+                    More by {course.designer}
+                  </CardTitle>
+                  <CardDescription>Other courses by this designer</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {designerCourses.map((designerCourse) => (
+                    <div key={designerCourse.id} className="border-b last:border-0 pb-3 last:pb-0">
+                      <Link href={`/courses/${encodeURIComponent(designerCourse.name.toLowerCase().replace(/\s+/g, "-"))}`}>
+                        <h4 className="font-medium text-sm hover:text-primary transition-colors mb-1">
+                          {designerCourse.name}
+                        </h4>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          {designerCourse.server && (
+                            <Badge variant="secondary" className="text-xs">
+                              {designerCourse.server}
+                            </Badge>
+                          )}
+                        </div>
+                      </Link>
+                    </div>
+                  ))}
+                  {course.designer && (
+                    <Button variant="outline" className="w-full" asChild>
+                      <Link href={`/designers/${encodeURIComponent(course.designer)}`}>
+                        View All <ArrowRight className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Newsletter Widget */}
+            <NewsletterWidget userEmail={userEmail} isSubscribed={isSubscribed} />
+
+            {/* Sidebar Ad */}
+            <div className="hidden lg:block">
+              <MediumRectangleAd />
+            </div>
+          </aside>
+        </div>
       </div>
     </div>
   );
