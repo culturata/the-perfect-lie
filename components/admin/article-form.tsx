@@ -18,6 +18,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { createArticle, updateArticle, type ArticleFormData } from "@/app/actions/admin/articles";
 import { Article, ArticleCategory, BudgetTier, RoomType, CeilingHeight, BuildStyle } from "@prisma/client";
 import { articleCategoryLabels, budgetTierLabels, roomTypeLabels, ceilingHeightLabels, buildStyleLabels } from "@/lib/articles";
+import { RichTextEditor } from "@/components/admin/rich-text-editor";
+import { generateArticleTitle, generateArticleExcerpt } from "@/app/actions/ai/generate";
+import { Sparkles, Loader2 } from "lucide-react";
 
 interface ArticleFormProps {
   article?: Article;
@@ -26,6 +29,49 @@ interface ArticleFormProps {
 export function ArticleForm({ article }: ArticleFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [title, setTitle] = useState(article?.title || "");
+  const [excerpt, setExcerpt] = useState(article?.excerpt || "");
+  const [content, setContent] = useState(article?.content || "");
+  const [category, setCategory] = useState<ArticleCategory | "">(article?.category || "");
+  const [isGeneratingTitle, setIsGeneratingTitle] = useState(false);
+  const [isGeneratingExcerpt, setIsGeneratingExcerpt] = useState(false);
+  const [topicForTitle, setTopicForTitle] = useState("");
+
+  async function handleGenerateTitle() {
+    if (!topicForTitle.trim()) {
+      alert("Please enter a topic first");
+      return;
+    }
+
+    setIsGeneratingTitle(true);
+    try {
+      const generatedTitle = await generateArticleTitle(topicForTitle);
+      setTitle(generatedTitle);
+    } catch (error) {
+      console.error("Failed to generate title:", error);
+      alert("Failed to generate title. Please try again.");
+    } finally {
+      setIsGeneratingTitle(false);
+    }
+  }
+
+  async function handleGenerateExcerpt() {
+    if (!title.trim()) {
+      alert("Please enter a title first");
+      return;
+    }
+
+    setIsGeneratingExcerpt(true);
+    try {
+      const generatedExcerpt = await generateArticleExcerpt(title);
+      setExcerpt(generatedExcerpt);
+    } catch (error) {
+      console.error("Failed to generate excerpt:", error);
+      alert("Failed to generate excerpt. Please try again.");
+    } finally {
+      setIsGeneratingExcerpt(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -34,11 +80,11 @@ export function ArticleForm({ article }: ArticleFormProps) {
     const formData = new FormData(e.currentTarget);
 
     const data: ArticleFormData = {
-      title: formData.get("title") as string,
+      title,
       slug: formData.get("slug") as string || undefined,
-      excerpt: formData.get("excerpt") as string,
-      content: formData.get("content") as string,
-      category: formData.get("category") as ArticleCategory,
+      excerpt,
+      content,
+      category: category as ArticleCategory,
       subcategory: formData.get("subcategory") as string || undefined,
       metaTitle: formData.get("metaTitle") as string || undefined,
       metaDescription: formData.get("metaDescription") as string || undefined,
@@ -74,11 +120,42 @@ export function ArticleForm({ article }: ArticleFormProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Title *</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="title">Title *</Label>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Enter topic..."
+                  value={topicForTitle}
+                  onChange={(e) => setTopicForTitle(e.target.value)}
+                  className="w-48 h-8 text-xs"
+                />
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={handleGenerateTitle}
+                  disabled={isGeneratingTitle}
+                  className="gap-1"
+                >
+                  {isGeneratingTitle ? (
+                    <>
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-3 w-3" />
+                      Generate
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
             <Input
               id="title"
               name="title"
-              defaultValue={article?.title}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Golf Simulator Basics: The Components"
               required
             />
@@ -98,11 +175,34 @@ export function ArticleForm({ article }: ArticleFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="excerpt">Excerpt *</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="excerpt">Excerpt *</Label>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={handleGenerateExcerpt}
+                disabled={isGeneratingExcerpt || !title}
+                className="gap-1"
+              >
+                {isGeneratingExcerpt ? (
+                  <>
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-3 w-3" />
+                    Generate
+                  </>
+                )}
+              </Button>
+            </div>
             <Textarea
               id="excerpt"
               name="excerpt"
-              defaultValue={article?.excerpt}
+              value={excerpt}
+              onChange={(e) => setExcerpt(e.target.value)}
               placeholder="Brief description for cards and SEO (2-3 sentences)"
               rows={3}
               required
@@ -112,7 +212,12 @@ export function ArticleForm({ article }: ArticleFormProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="category">Category *</Label>
-              <Select name="category" defaultValue={article?.category} required>
+              <Select
+                name="category"
+                value={category}
+                onValueChange={(value) => setCategory(value as ArticleCategory)}
+                required
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
@@ -157,24 +262,20 @@ export function ArticleForm({ article }: ArticleFormProps) {
       <Card>
         <CardHeader>
           <CardTitle>Content</CardTitle>
-          <CardDescription>Article HTML content</CardDescription>
+          <CardDescription>
+            Use the rich text editor to write and format your article. AI features available!
+          </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="content">Article Content (HTML) *</Label>
-            <Textarea
-              id="content"
-              name="content"
-              defaultValue={article?.content}
-              placeholder="<h2>Section Title</h2><p>Your content here...</p>"
-              rows={20}
-              className="font-mono text-sm"
-              required
-            />
-            <p className="text-xs text-muted-foreground">
-              Use HTML formatting (h2, h3, p, ul, li, strong, etc.)
-            </p>
-          </div>
+        <CardContent>
+          <RichTextEditor
+            content={content}
+            onChange={setContent}
+            articleTitle={title}
+            articleCategory={category}
+            articleExcerpt={excerpt}
+            placeholder="Start writing your article or use AI to generate content..."
+          />
+          <input type="hidden" name="content" value={content} />
         </CardContent>
       </Card>
 
