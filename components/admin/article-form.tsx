@@ -411,7 +411,7 @@ export function ArticleForm({ article }: ArticleFormProps) {
             <Switch
               id="published"
               name="published"
-              defaultChecked={article?.published}
+              defaultChecked={article?.published ?? true}
             />
           </div>
 
