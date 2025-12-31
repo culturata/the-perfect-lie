@@ -31,6 +31,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ArrowUpDown, ArrowUp, ArrowDown, Search, Filter, Settings2, Eye, EyeOff } from "lucide-react";
 
+// Server to Patreon URL mapping
+const SERVER_URLS: Record<string, string> = {
+  "Pakman Tier 1": "https://www.patreon.com/cw/pakgolfstudios",
+  "RunPuddRun Birdie": "https://www.patreon.com/c/runpuddrun/home?vanity=runpuddrun",
+  "RunPuddRun Eagle": "https://www.patreon.com/c/runpuddrun/home?vanity=runpuddrun",
+  "TekBud": "https://www.patreon.com/c/tekbud/home",
+  "TheGolfBoy": "https://www.patreon.com/thegolfboy",
+};
+
 interface Course {
   id: string;
   name: string;
@@ -383,15 +392,34 @@ export function CourseTable({ courses }: CourseTableProps) {
                     }
 
                     if (column.key === "server") {
+                      const serverUrl = course.server ? SERVER_URLS[course.server] : null;
+
                       return (
                         <TableCell key="server" className={column.responsive || ""}>
                           {course.server ? (
-                            <Badge
-                              variant={course.server.toLowerCase() === "beta" ? "destructive" : "secondary"}
-                              className="whitespace-nowrap"
-                            >
-                              {course.server}
-                            </Badge>
+                            serverUrl ? (
+                              <a
+                                href={serverUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="inline-block hover:opacity-80 transition-opacity"
+                              >
+                                <Badge
+                                  variant={course.server.toLowerCase() === "beta" ? "destructive" : "secondary"}
+                                  className="whitespace-nowrap cursor-pointer"
+                                >
+                                  {course.server}
+                                </Badge>
+                              </a>
+                            ) : (
+                              <Badge
+                                variant={course.server.toLowerCase() === "beta" ? "destructive" : "secondary"}
+                                className="whitespace-nowrap"
+                              >
+                                {course.server}
+                              </Badge>
+                            )
                           ) : (
                             <span className="text-muted-foreground">—</span>
                           )}
