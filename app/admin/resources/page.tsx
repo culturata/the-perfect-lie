@@ -10,7 +10,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Plus, Pencil, Trash2, Star, ExternalLink } from "lucide-react";
-import { getResources, getCategoryLabel } from "@/app/actions/resources";
+import { getResources } from "@/app/actions/resources";
+import { getCategoryLabel } from "@/lib/resources";
 import { DeleteResourceButton } from "@/components/admin/delete-resource-button";
 
 export default async function AdminResourcesPage() {
