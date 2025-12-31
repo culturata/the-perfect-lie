@@ -70,6 +70,14 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen">
+      {/* Header Ad */}
+      <div className="border-b bg-background">
+        <div className="container px-4 py-4 flex justify-center">
+          <LeaderboardAd className="hidden md:flex" />
+          <MobileBannerAd className="md:hidden" />
+        </div>
+      </div>
+
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-muted/50 to-background border-b">
         <div className="container px-4 py-12 md:py-16">
@@ -96,19 +104,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Header Ad */}
-      <div className="border-b bg-background">
-        <div className="container px-4 py-4 flex justify-center">
-          <LeaderboardAd className="hidden md:flex" />
-          <MobileBannerAd className="md:hidden" />
-        </div>
-      </div>
-
       {/* Main Content */}
       <div className="container px-4 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="flex flex-col lg:flex-row gap-8">
           {/* Main Content Area */}
-          <div className="lg:col-span-8 space-y-8">
+          <div className="flex-1 space-y-8">
             {/* Recent Articles */}
             <div>
               <div className="flex items-center justify-between mb-6">
@@ -163,7 +163,7 @@ export default async function HomePage() {
           </div>
 
           {/* Sidebar */}
-          <aside className="lg:col-span-4 space-y-6">
+          <aside className="w-full lg:w-[300px] flex-shrink-0 space-y-6">
             {/* Desktop Skyscraper Ad */}
             <div className="hidden lg:block">
               <LargeSkyscraperAd className="mb-6" />
