@@ -93,6 +93,7 @@ export function RichTextEditor({
       Typography,
     ],
     content,
+    immediatelyRender: false,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
