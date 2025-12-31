@@ -45,6 +45,11 @@ A modern, full-stack Next.js application for the GSPro golf simulator community.
 - **Clean Typography**: Optimized reading experience with prose styling
 - **Article Detail Pages**: Full articles with related content sidebar
 - **Minimal Design**: Text-focused cards with category badges
+- **Newsletter Subscription**:
+  - Smart signup widget in sidebar
+  - Auto-detects logged-in users
+  - Tracks subscription status
+  - Supports both authenticated and anonymous subscriptions
 
 ### 🛠️ Resource Hub
 - **12 Categories**:
@@ -254,6 +259,7 @@ the-perfect-lie/
 │   │   ├── reviews.ts        # Review CRUD + filtering
 │   │   ├── notifications.ts  # Notification management
 │   │   ├── resources.ts      # Resource CRUD
+│   │   ├── newsletter.ts     # Newsletter subscription
 │   │   └── users.ts          # User management + bozo system
 │   ├── admin/                # Admin panel
 │   │   ├── resources/        # Resource management
@@ -276,6 +282,7 @@ the-perfect-lie/
 │   ├── reviews/              # Review components
 │   ├── comments/             # Comment components
 │   ├── notifications/        # Notification components
+│   ├── newsletter/           # Newsletter widget
 │   └── layout/               # Layout components
 ├── lib/
 │   ├── db.ts                 # Prisma client
@@ -327,6 +334,11 @@ The application uses the following main models:
 
 - **UserPreferences**: Notification settings
   - Email on reply, mention, digest options
+
+- **NewsletterSubscription**: Newsletter subscribers
+  - Email and optional user association
+  - Active/inactive status tracking
+  - Supports both logged-in and anonymous users
 
 - **Favorite**: User's favorite courses
 
