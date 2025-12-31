@@ -4,7 +4,7 @@ import Link from "next/link";
 import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/notifications/notification-bell";
-import { Shield } from "lucide-react";
+import { Shield, FolderHeart } from "lucide-react";
 
 export function Header() {
   const { user } = useUser();
@@ -75,6 +75,12 @@ export function Header() {
                 </Link>
               </Button>
             )}
+            <Button variant="ghost" size="sm" className="hidden lg:inline-flex gap-1" asChild>
+              <Link href="/collections">
+                <FolderHeart className="h-4 w-4" />
+                Collections
+              </Link>
+            </Button>
             <Button variant="ghost" size="sm" className="hidden md:inline-flex" asChild>
               <Link href="/dashboard">Dashboard</Link>
             </Button>

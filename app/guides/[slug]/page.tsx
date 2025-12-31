@@ -10,6 +10,7 @@ import { LeaderboardAd, MobileBannerAd, MediumRectangleAd } from "@/components/a
 import { NewsletterWidget } from "@/components/newsletter/newsletter-widget";
 import { getCurrentUserSubscription } from "@/app/actions/newsletter";
 import { currentUser } from "@clerk/nextjs/server";
+import { AddToCollectionButton } from "@/components/collections/add-to-collection-button";
 
 export const dynamic = "force-dynamic";
 
@@ -84,6 +85,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   </>
                 )}
                 {article.readTime && <span>{article.readTime}</span>}
+              </div>
+              <div className="pt-2">
+                <AddToCollectionButton itemType="ARTICLE" articleId={article.id} />
               </div>
             </div>
           </div>
