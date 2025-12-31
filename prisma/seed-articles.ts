@@ -925,7 +925,419 @@ async function main() {
     },
   });
 
-  console.log("Seed completed successfully! Added 6 articles.");
+  // Article 16: PC Specs for Golf Simulator Software
+  await prisma.article.upsert({
+    where: { slug: "pc-specs-golf-simulator-software-three-tiers" },
+    update: {},
+    create: {
+      title: "PC Specs for Golf Simulator Software: Three Tiers That Actually Make Sense",
+      slug: "pc-specs-golf-simulator-software-three-tiers" ,
+      excerpt: "Understanding what PC hardware you really need for GSPro. Three performance tiers with specific part recommendations and why each component matters.",
+      category: "PC_SOFTWARE",
+      readTime: "15 min read",
+      published: true,
+      featured: true,
+      order: 16,
+      publishedAt: new Date(),
+      budgetTier: "MID",
+      content: `
+        <h2>Who This Is For</h2>
+        <p>You need to build or buy a PC for GSPro and want to understand what hardware delivers smooth performance without overspending.</p>
+
+        <h2>What You're Deciding</h2>
+        <p>The PC renders GSPro's 3D courses, processes launch monitor data in real-time, and manages all peripheral connections. Performance here directly affects your playing experience.</p>
+
+        <h2>Key Terms</h2>
+        <ul>
+          <li><strong>GPU (Graphics Card):</strong> Renders 3D graphics - most important component for GSPro</li>
+          <li><strong>CPU (Processor):</strong> Handles physics calculations and data processing</li>
+          <li><strong>RAM (Memory):</strong> Temporary storage for active programs and data</li>
+          <li><strong>Frame rate (FPS):</strong> Images per second - 60fps minimum, 120fps+ ideal</li>
+          <li><strong>Resolution:</strong> 1080p (1920x1080) or 4K (3840x2160)</li>
+          <li><strong>VRAM:</strong> Dedicated graphics memory - more needed for 4K</li>
+        </ul>
+
+        <h2>The Decision Framework</h2>
+
+        <h3>Step 1: Define Your Target Performance</h3>
+        <p>What experience do you want?</p>
+        <ul>
+          <li><strong>Playable:</strong> 1080p, 60fps, medium settings</li>
+          <li><strong>Smooth:</strong> 1080p, 120fps, high settings OR 4K, 60fps</li>
+          <li><strong>Buttery:</strong> 4K, 120fps, ultra settings</li>
+        </ul>
+
+        <h3>Step 2: Match Projector Resolution</h3>
+        <p>If you have a 1080p projector, a 4K-capable PC is wasted money. Match your PC to your display capability.</p>
+
+        <h3>Step 3: Consider Future-Proofing</h3>
+        <p>GSPro continues improving graphics. Building slightly above current needs gives you 3-5 years before upgrades.</p>
+
+        <h3>Step 4: Budget Realistically</h3>
+        <p>Quality PC builds cost:</p>
+        <ul>
+          <li>Entry tier: $800-$1,200</li>
+          <li>Sweet spot tier: $1,200-$1,800</li>
+          <li>High-end tier: $1,800-$3,000</li>
+        </ul>
+
+        <h2>The Three Tiers</h2>
+
+        <h3>Tier 1: Entry / 1080p Medium ($800-$1,200)</h3>
+        <p><strong>Who it's for:</strong> Budget-conscious builders, 1080p projector owners, casual players</p>
+
+        <p><strong>Performance target:</strong> 1080p at 60-75fps on medium settings</p>
+
+        <p><strong>Recommended Build:</strong></p>
+        <ul>
+          <li><strong>GPU:</strong> NVIDIA RTX 4060 (8GB) or AMD RX 7600 ($280-$350)</li>
+          <li><strong>CPU:</strong> Intel i5-13400F or AMD Ryzen 5 7600 ($180-$220)</li>
+          <li><strong>RAM:</strong> 16GB DDR4-3200 ($50-$70)</li>
+          <li><strong>Storage:</strong> 500GB NVMe SSD ($40-$60)</li>
+          <li><strong>Motherboard:</strong> B660 (Intel) or B650 (AMD) ($120-$150)</li>
+          <li><strong>Power Supply:</strong> 550W 80+ Bronze ($60-$80)</li>
+          <li><strong>Case:</strong> Airflow-focused ATX ($60-$80)</li>
+        </ul>
+
+        <p><strong>Total: $890-$1,210</strong></p>
+
+        <p><strong>GSPro experience:</strong> Smooth enough for enjoyable play. Courses load quickly. Frame rate stays above 60fps. You won't notice stuttering during normal play.</p>
+
+        <h3>Tier 2: Sweet Spot / 1080p High or 4K Medium ($1,200-$1,800)</h3>
+        <p><strong>Who it's for:</strong> Serious sim golfers, 4K projector owners, those wanting headroom</p>
+
+        <p><strong>Performance target:</strong> 1080p at 120fps+ on high OR 4K at 60fps on medium-high</p>
+
+        <p><strong>Recommended Build:</strong></p>
+        <ul>
+          <li><strong>GPU:</strong> NVIDIA RTX 4070 (12GB) or AMD RX 7800 XT ($550-$650)</li>
+          <li><strong>CPU:</strong> Intel i5-14600K or AMD Ryzen 7 7700X ($280-$350)</li>
+          <li><strong>RAM:</strong> 32GB DDR5-5600 ($120-$160)</li>
+          <li><strong>Storage:</strong> 1TB NVMe Gen4 SSD ($80-$120)</li>
+          <li><strong>Motherboard:</strong> Z790 (Intel) or X670 (AMD) ($200-$250)</li>
+          <li><strong>CPU Cooler:</strong> Tower air cooler ($40-$60)</li>
+          <li><strong>Power Supply:</strong> 750W 80+ Gold ($100-$130)</li>
+          <li><strong>Case:</strong> Quality airflow case ($80-$120)</li>
+        </ul>
+
+        <p><strong>Total: $1,450-$1,840</strong></p>
+
+        <p><strong>GSPro experience:</strong> Buttery smooth. Graphics look stunning. Fast load times. Handles 4K beautifully. This is the sweet spot most builders should aim for.</p>
+
+        <h3>Tier 3: High-End / 4K High ($1,800-$3,000)</h3>
+        <p><strong>Who it's for:</strong> No-compromise builders, 4K projector owners, future-proofing for 3-5 years</p>
+
+        <p><strong>Performance target:</strong> 4K at 120fps on high-ultra settings</p>
+
+        <p><strong>Recommended Build:</strong></p>
+        <ul>
+          <li><strong>GPU:</strong> NVIDIA RTX 4080 (16GB) or RTX 4090 (24GB) ($1,100-$1,800)</li>
+          <li><strong>CPU:</strong> Intel i7-14700K or AMD Ryzen 9 7900X ($380-$480)</li>
+          <li><strong>RAM:</strong> 32GB DDR5-6000 ($160-$200)</li>
+          <li><strong>Storage:</strong> 2TB NVMe Gen4 SSD ($150-$200)</li>
+          <li><strong>Motherboard:</strong> Premium Z790/X670 ($250-$350)</li>
+          <li><strong>CPU Cooler:</strong> 280mm AIO liquid cooler ($120-$160)</li>
+          <li><strong>Power Supply:</strong> 850W+ 80+ Gold/Platinum ($150-$200)</li>
+          <li><strong>Case:</strong> Premium airflow case ($120-$180)</li>
+        </ul>
+
+        <p><strong>Total: $2,430-$3,570</strong></p>
+
+        <p><strong>GSPro experience:</strong> Absolutely pristine. Every detail visible. Maximum immersion. Won't need upgrades for years.</p>
+
+        <h2>Component Priorities</h2>
+
+        <h3>1. GPU Matters Most</h3>
+        <p>GSPro is GPU-intensive. Spend 40-50% of your budget here. The difference between a $300 and $600 GPU is immediately visible in GSPro.</p>
+
+        <h3>2. CPU Should Not Bottleneck</h3>
+        <p>Mid-range CPUs (i5/Ryzen 5) handle GSPro fine. Don't overspend unless doing other heavy tasks.</p>
+
+        <h3>3. RAM: 16GB Minimum, 32GB Recommended</h3>
+        <p>16GB works but Windows and background tasks eat memory. 32GB gives breathing room.</p>
+
+        <h3>4. SSD is Non-Negotiable</h3>
+        <p>NVMe SSD for fast course loading. Hard drives are unacceptably slow in 2025.</p>
+
+        <h3>5. Don't Cheap Out on Power Supply</h3>
+        <p>Quality PSU protects expensive components. 80+ Gold minimum for reliability.</p>
+
+        <h2>Common Mistakes</h2>
+        <ul>
+          <li><strong>Matching CPU to GPU budget:</strong> Don't spend equal on both - GPU needs more</li>
+          <li><strong>Buying gaming laptop instead of desktop:</strong> Laptops overheat, throttle, cost more for same performance</li>
+          <li><strong>Skimping on RAM to afford better GPU:</strong> 16GB is minimum, 32GB prevents issues</li>
+          <li><strong>Building to minimum specs:</strong> You'll want to upgrade within a year</li>
+          <li><strong>Forgetting Windows license:</strong> Add $100-$140 to your budget</li>
+          <li><strong>Not planning for peripherals:</strong> Keyboard, mouse, USB hub add up</li>
+        </ul>
+
+        <h2>Pre-Built vs Custom Build</h2>
+
+        <h3>Build Your Own (Recommended)</h3>
+        <p><strong>Advantages:</strong></p>
+        <ul>
+          <li>Save 20-30% vs pre-built</li>
+          <li>Choose quality components</li>
+          <li>Easy to upgrade later</li>
+          <li>Learning experience</li>
+        </ul>
+
+        <p><strong>Challenges:</strong></p>
+        <ul>
+          <li>Requires research and assembly time</li>
+          <li>No single warranty (component warranties vary)</li>
+          <li>Troubleshooting is on you</li>
+        </ul>
+
+        <h3>Buy Pre-Built</h3>
+        <p><strong>Advantages:</strong></p>
+        <ul>
+          <li>Arrives ready to use</li>
+          <li>Single point of support</li>
+          <li>Less intimidating for non-technical users</li>
+        </ul>
+
+        <p><strong>Challenges:</strong></p>
+        <ul>
+          <li>Costs 20-30% more</li>
+          <li>Often has cheap PSU, RAM, or storage</li>
+          <li>Harder to upgrade</li>
+          <li>May include bloatware</li>
+        </ul>
+
+        <p><strong>If buying pre-built:</strong> Look for NZXT BLD, Maingear, or iBuyPower. Avoid big box store gaming PCs.</p>
+
+        <h2>Quick Build Checklist</h2>
+        <ul>
+          <li>☐ Target resolution: 1080p / 4K</li>
+          <li>☐ Target frame rate: 60fps / 120fps</li>
+          <li>☐ Budget: $ _______</li>
+          <li>☐ GPU selected (40-50% of budget)</li>
+          <li>☐ CPU matches GPU tier</li>
+          <li>☐ RAM: 16GB minimum, 32GB preferred</li>
+          <li>☐ NVMe SSD (500GB+ for OS and GSPro)</li>
+          <li>☐ Quality PSU (80+ Gold)</li>
+          <li>☐ Good airflow case</li>
+          <li>☐ Windows license budgeted</li>
+          <li>☐ Future upgrade path considered</li>
+        </ul>
+
+        <h2>Next Steps</h2>
+        <p>With your PC spec decided, focus on Windows setup and optimization for GSPro. Driver updates, power settings, and background process management all affect performance.</p>
+      `,
+    },
+  });
+
+  // Article 33: Starter Build Under Budget
+  await prisma.article.upsert({
+    where: { slug: "starter-build-budget-practical-shopping-list" },
+    update: {},
+    create: {
+      title: "Starter Build Under Budget: A Practical Shopping List",
+      slug: "starter-build-budget-practical-shopping-list",
+      excerpt: "Complete parts list for a functional golf simulator under $5,000. Everything you need to get started with GSPro without breaking the bank.",
+      category: "EXAMPLE_BUILDS",
+      readTime: "12 min read",
+      published: true,
+      featured: true,
+      order: 33,
+      publishedAt: new Date(),
+      budgetTier: "STARTER",
+      buildStyle: "DIY",
+      content: `
+        <h2>Who This Is For</h2>
+        <p>You want to build a functional golf simulator for GSPro but need to keep total costs under $5,000. This guide provides a complete, tested parts list.</p>
+
+        <h2>Build Overview</h2>
+        <p><strong>Total Budget: $4,500-$4,900</strong></p>
+        <p><strong>Performance: 1080p at 60-75fps, accurate ball tracking, comfortable year-round use</strong></p>
+        <p><strong>Space Requirements: 12ft W x 16ft D x 9ft H minimum</strong></p>
+
+        <h2>The Complete Shopping List</h2>
+
+        <h3>Launch Monitor ($600-$900)</h3>
+        <p><strong>Garmin Approach R10 ($600)</strong> or <strong>Rapsodo MLM2Pro ($800-$900)</strong></p>
+        <p>Both provide adequate accuracy for recreational play. R10 is more budget-friendly. Rapsodo offers slightly better data.</p>
+        <p><strong>Why this choice:</strong> Best bang-for-buck in launch monitors. Proven GSPro integration.</p>
+
+        <h3>Projector ($350-$500)</h3>
+        <p><strong>BenQ TH585P ($400)</strong> or <strong>Optoma HD146X ($350-$450)</strong></p>
+        <ul>
+          <li>3600 lumens (handles moderate ambient light)</li>
+          <li>1080p resolution</li>
+          <li>Short throw ratio (~1.1)</li>
+          <li>Gaming mode (low input lag)</li>
+        </ul>
+        <p><strong>Why this choice:</strong> Reliable, bright, affordable. Perfect for 12-14 foot screens.</p>
+
+        <h3>Impact Screen ($200-$350)</h3>
+        <p><strong>Carl's Place DIY Screen Material ($200-$300 for 10x12 ft)</strong></p>
+        <p>Or complete screen from Rain or Shine Golf ($350)</p>
+        <p><strong>Why this choice:</strong> Proven durability, good image quality, reduces bounce-back</p>
+
+        <h3>Enclosure Frame ($150-$300)</h3>
+        <p><strong>DIY EMT Conduit Frame (~$150)</strong></p>
+        <ul>
+          <li>10ft EMT conduit (3/4 inch): 10 pieces ($60-$80)</li>
+          <li>EMT fittings (elbows, tees, caps): $40-$60</li>
+          <li>Impact netting for sides: $50-$100</li>
+        </ul>
+
+        <p><strong>Alternative: Wood frame ($200-$300)</strong></p>
+        <ul>
+          <li>2x4 lumber for framing</li>
+          <li>Screws, brackets, corner braces</li>
+          <li>Side netting</li>
+        </ul>
+        <p><strong>Why this choice:</strong> EMT is cheap, modular, and easy to adjust. Wood is sturdier but permanent.</p>
+
+        <h3>Hitting Mat ($400-$600)</h3>
+        <p><strong>Country Club Elite Real Feel Mat ($450-$550)</strong></p>
+        <p>Or Fiberbuilt Flight Deck ($500-$600)</p>
+        <p><strong>Why this choice:</strong> Joint protection is critical. Cheap mats cause pain. This is where you don't skimp.</p>
+
+        <h3>Turf/Flooring ($100-$200)</h3>
+        <ul>
+          <li>Foam floor tiles for subfloor: $60-$100</li>
+          <li>Artificial turf for stance area: $40-$100</li>
+        </ul>
+
+        <h3>Computer ($800-$1,200)</h3>
+        <p><strong>Option 1: Build Custom PC ($900-$1,100)</strong></p>
+        <ul>
+          <li>GPU: NVIDIA RTX 4060 ($300-$350)</li>
+          <li>CPU: Intel i5-13400F ($180-$220)</li>
+          <li>RAM: 16GB DDR4 ($50-$70)</li>
+          <li>Storage: 500GB NVMe SSD ($50)</li>
+          <li>Motherboard: B660 ($120-$150)</li>
+          <li>PSU: 550W 80+ Bronze ($70)</li>
+          <li>Case: Budget ATX ($60)</li>
+          <li>Windows 11: $100-$140</li>
+        </ul>
+
+        <p><strong>Option 2: Buy Pre-Built ($900-$1,200)</strong></p>
+        <p>Look for RTX 4060 + i5-13400F combos on Newegg, Best Buy, or Amazon</p>
+
+        <h3>Mounting & Cables ($100-$150)</h3>
+        <ul>
+          <li>Projector ceiling mount: $30-$50</li>
+          <li>HDMI cable (25-30 ft): $20-$30</li>
+          <li>USB extension for launch monitor: $15-$25</li>
+          <li>Power strip/surge protector: $20-$30</li>
+          <li>Cable management: $15-$20</li>
+        </ul>
+
+        <h3>Lighting ($100-$200)</h3>
+        <ul>
+          <li>LED shop lights or track lighting: $80-$150</li>
+          <li>Smart dimmer switches: $20-$50</li>
+        </ul>
+
+        <h3>Miscellaneous ($150-$250)</h3>
+        <ul>
+          <li>Ball return net/containment: $30-$50</li>
+          <li>Bungee cords for screen tensioning: $20-$30</li>
+          <li>Acoustic foam panels (optional): $50-$100</li>
+          <li>Tools and hardware: $50-$70</li>
+        </ul>
+
+        <h2>Budget Breakdown</h2>
+        <table>
+          <tr><td>Launch Monitor</td><td>$600-$900</td></tr>
+          <tr><td>Projector</td><td>$350-$500</td></tr>
+          <tr><td>Screen</td><td>$200-$350</td></tr>
+          <tr><td>Enclosure/Frame</td><td>$150-$300</td></tr>
+          <tr><td>Hitting Mat</td><td>$400-$600</td></tr>
+          <tr><td>Flooring</td><td>$100-$200</td></tr>
+          <tr><td>Computer</td><td>$800-$1,200</td></tr>
+          <tr><td>Mounting/Cables</td><td>$100-$150</td></tr>
+          <tr><td>Lighting</td><td>$100-$200</td></tr>
+          <tr><td>Miscellaneous</td><td>$150-$250</td></tr>
+          <tr><td><strong>TOTAL</strong></td><td><strong>$2,950-$4,650</strong></td></tr>
+        </table>
+
+        <p><strong>Realistic budget with contingency: $4,500-$5,000</strong></p>
+
+        <h2>What You Get</h2>
+        <ul>
+          <li>✅ Accurate ball tracking for GSPro (Garmin R10 or Rapsodo)</li>
+          <li>✅ 12-14 foot screen with good image quality</li>
+          <li>✅ Smooth 60fps+ performance at 1080p</li>
+          <li>✅ Joint-safe hitting mat for long sessions</li>
+          <li>✅ Safe, contained hitting area</li>
+          <li>✅ Comfortable lighting that works with launch monitor</li>
+          <li>✅ Room for one golfer plus observer</li>
+        </ul>
+
+        <h2>What You Don't Get</h2>
+        <ul>
+          <li>❌ Club data (path, face angle) - ball-only launch monitor</li>
+          <li>❌ 4K graphics - 1080p projector and GPU</li>
+          <li>❌ Putting analysis - budget launch monitors don't track putts</li>
+          <li>❌ Premium aesthetics - functional but not showroom quality</li>
+          <li>❌ Turnkey setup - requires DIY assembly</li>
+        </ul>
+
+        <h2>Money-Saving Tips</h2>
+        <ul>
+          <li><strong>Buy used launch monitor:</strong> Save $100-$200 on R10 or Rapsodo</li>
+          <li><strong>DIY screen material vs pre-made:</strong> Save $100-$150</li>
+          <li><strong>EMT frame vs prefab enclosure:</strong> Save $500-$1,500</li>
+          <li><strong>Build PC vs buy pre-built:</strong> Save $200-$300</li>
+          <li><strong>Shop Black Friday/Cyber Monday:</strong> Save 15-30% on projector, PC parts</li>
+        </ul>
+
+        <h2>Where NOT to Cut Corners</h2>
+        <ul>
+          <li><strong>Hitting mat:</strong> Cheap mats cause joint pain</li>
+          <li><strong>Launch monitor:</strong> Ultra-budget units frustrate with poor accuracy</li>
+          <li><strong>PC GPU:</strong> Underpowered GPU makes GSPro unplayable</li>
+          <li><strong>Screen tensioning:</strong> Loose screens create hotspots and wrinkles</li>
+        </ul>
+
+        <h2>Build Timeline</h2>
+        <ul>
+          <li><strong>Week 1:</strong> Order launch monitor, projector, PC components</li>
+          <li><strong>Week 2:</strong> Order screen, mat, enclosure materials</li>
+          <li><strong>Week 3:</strong> Build PC, test with GSPro trial</li>
+          <li><strong>Week 4:</strong> Frame enclosure, mount screen</li>
+          <li><strong>Week 5:</strong> Install projector, run cables, setup lighting</li>
+          <li><strong>Week 6:</strong> Install mat/flooring, calibrate launch monitor</li>
+          <li><strong>Week 7:</strong> Fine-tune and play!</li>
+        </ul>
+
+        <h2>Upgrade Path</h2>
+        <p>When you have budget later, upgrade in this order for maximum impact:</p>
+        <ol>
+          <li><strong>Launch monitor to mid-tier ($2,000-$3,000):</strong> SkyTrak+ or Bushnell Launch Pro</li>
+          <li><strong>GPU to RTX 4070 ($550-$650):</strong> Enables 4K or 120fps</li>
+          <li><strong>4K projector ($800-$1,500):</strong> Better visuals</li>
+          <li><strong>Premium mat ($800-$1,200):</strong> Even better feel and durability</li>
+        </ol>
+
+        <h2>Quick Checklist</h2>
+        <ul>
+          <li>☐ Total budget confirmed: $ _______</li>
+          <li>☐ Room measured (meets minimum 12x16x9)</li>
+          <li>☐ Launch monitor ordered</li>
+          <li>☐ Projector ordered (matches throw distance)</li>
+          <li>☐ Screen material ordered (sized for frame)</li>
+          <li>☐ Enclosure materials sourced</li>
+          <li>☐ Quality hitting mat ordered</li>
+          <li>☐ PC built or ordered</li>
+          <li>☐ GSPro license purchased</li>
+          <li>☐ Mounting hardware acquired</li>
+          <li>☐ Lighting planned</li>
+        </ul>
+
+        <h2>Next Steps</h2>
+        <p>Start by ordering the launch monitor and projector - these have the longest lead times. While waiting, build your PC and start planning your enclosure layout.</p>
+      `,
+    },
+  });
+
+  console.log("Seed completed successfully! Added 8 articles total.");
 }
 
 main()
