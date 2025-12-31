@@ -1,7 +1,7 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Home, Package, Settings } from "lucide-react";
+import { Home, Package, Users } from "lucide-react";
 
 export default async function AdminLayout({
   children,
@@ -23,6 +23,7 @@ export default async function AdminLayout({
   const navItems = [
     { href: "/admin", label: "Dashboard", icon: Home },
     { href: "/admin/resources", label: "Resources", icon: Package },
+    { href: "/admin/users", label: "Users", icon: Users },
   ];
 
   return (

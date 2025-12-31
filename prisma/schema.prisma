@@ -122,6 +122,7 @@ model User {
   firstName String?
   lastName  String?
   avatarUrl String?
+  isBozo    Boolean @default(false) // Shadowbanned user (only they see their content)
 
   // Relationships
   favorites            Favorite[]

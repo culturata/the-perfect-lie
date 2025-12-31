@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Package, ArrowRight } from "lucide-react";
+import { Package, ArrowRight, Users } from "lucide-react";
 import { db } from "@/lib/db";
 
 export default async function AdminDashboard() {
@@ -16,6 +16,12 @@ export default async function AdminDashboard() {
       value: resourceCount,
       href: "/admin/resources",
       icon: Package,
+    },
+    {
+      title: "Users",
+      value: userCount,
+      href: "/admin/users",
+      icon: Users,
     },
   ];
 
@@ -67,6 +73,18 @@ export default async function AdminDashboard() {
               <Link href="/admin/resources">
                 <Button variant="outline" className="w-full justify-start">
                   View All Resources
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">User Management</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Link href="/admin/users">
+                <Button variant="outline" className="w-full justify-start">
+                  Manage Users
                 </Button>
               </Link>
             </CardContent>

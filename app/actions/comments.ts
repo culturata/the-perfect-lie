@@ -257,6 +257,8 @@ export async function deleteComment(commentId: string) {
 }
 
 export async function getCommentsForCourse(courseId: string) {
+  const { userId } = await auth();
+
   try {
     // Get all comments for the course (including replies)
     const comments = await db.comment.findMany({
@@ -272,6 +274,22 @@ export async function getCommentsForCourse(courseId: string) {
             replies: {
               include: {
                 user: true,
+                replies: {
+                  include: {
+                    user: true,
+                    replies: {
+                      include: {
+                        user: true,
+                      },
+                      orderBy: {
+                        createdAt: "asc",
+                      },
+                    },
+                  },
+                  orderBy: {
+                    createdAt: "asc",
+                  },
+                },
               },
               orderBy: {
                 createdAt: "asc",
@@ -288,7 +306,30 @@ export async function getCommentsForCourse(courseId: string) {
       },
     });
 
-    return comments;
+    // Filter out bozo users recursively (shadowban)
+    const filterBozoComments = (comments: any[]): any[] => {
+      return comments
+        .filter((comment) => {
+          // Always show non-bozo users' comments
+          if (!comment.user.isBozo) return true;
+          // Show bozo's own comments to themselves
+          if (userId && comment.user.id === userId) return true;
+          // Hide bozo comments from everyone else
+          return false;
+        })
+        .map((comment) => {
+          // Recursively filter replies
+          if (comment.replies && comment.replies.length > 0) {
+            return {
+              ...comment,
+              replies: filterBozoComments(comment.replies),
+            };
+          }
+          return comment;
+        });
+    };
+
+    return filterBozoComments(comments);
   } catch (error) {
     console.error("Error fetching comments:", error);
     return [];

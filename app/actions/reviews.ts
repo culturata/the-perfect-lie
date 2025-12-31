@@ -181,6 +181,8 @@ export async function deleteReview(reviewId: string) {
 }
 
 export async function getReviewsForCourse(courseId: string) {
+  const { userId } = await auth();
+
   try {
     const reviews = await db.review.findMany({
       where: { courseId },
@@ -192,7 +194,18 @@ export async function getReviewsForCourse(courseId: string) {
       },
     });
 
-    return reviews;
+    // Filter out bozo users (shadowban)
+    // Show bozo content ONLY to the bozo themselves
+    const filteredReviews = reviews.filter((review) => {
+      // Always show non-bozo users' reviews
+      if (!review.user.isBozo) return true;
+      // Show bozo's own reviews to themselves
+      if (userId && review.user.id === userId) return true;
+      // Hide bozo reviews from everyone else
+      return false;
+    });
+
+    return filteredReviews;
   } catch (error) {
     console.error("Error fetching reviews:", error);
     return [];
@@ -200,13 +213,33 @@ export async function getReviewsForCourse(courseId: string) {
 }
 
 export async function getCourseRatingStats(courseId: string) {
+  const { userId } = await auth();
+
   try {
     const reviews = await db.review.findMany({
       where: { courseId },
-      select: { rating: true },
+      include: {
+        user: {
+          select: {
+            id: true,
+            isBozo: true,
+          },
+        },
+      },
+      select: {
+        rating: true,
+        user: true,
+      },
     });
 
-    if (reviews.length === 0) {
+    // Filter out bozo users (shadowban) - same logic as getReviewsForCourse
+    const filteredReviews = reviews.filter((review) => {
+      if (!review.user.isBozo) return true;
+      if (userId && review.user.id === userId) return true;
+      return false;
+    });
+
+    if (filteredReviews.length === 0) {
       return {
         averageRating: 0,
         totalReviews: 0,
@@ -214,10 +247,10 @@ export async function getCourseRatingStats(courseId: string) {
       };
     }
 
-    const totalRating = reviews.reduce((sum, r) => sum + r.rating, 0);
-    const averageRating = totalRating / reviews.length;
+    const totalRating = filteredReviews.reduce((sum, r) => sum + r.rating, 0);
+    const averageRating = totalRating / filteredReviews.length;
 
-    const distribution = reviews.reduce(
+    const distribution = filteredReviews.reduce(
       (acc, r) => {
         acc[r.rating as 1 | 2 | 3 | 4 | 5]++;
         return acc;
@@ -227,7 +260,7 @@ export async function getCourseRatingStats(courseId: string) {
 
     return {
       averageRating: Math.round(averageRating * 10) / 10,
-      totalReviews: reviews.length,
+      totalReviews: filteredReviews.length,
       distribution,
     };
   } catch (error) {
