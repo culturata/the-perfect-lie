@@ -71,9 +71,22 @@ function normalizeName(name: string): string {
 
 /**
  * Extract potential course names from video title
+ * Enhanced to parse "GSPro Course Flyover - [CourseName] - Designed by [Designer]" pattern
  */
 function extractCourseName(videoTitle: string): string[] {
   const possibilities: string[] = [];
+
+  // Parse the standard flyover title pattern
+  // "GSPro Course Flyover - [Course Name] - Designed by [Designer] - ..."
+  const flyoverPattern = /GSPro Course Flyover\s*-\s*([^-]+)\s*-\s*Designed by\s+([^-]+)/i;
+  const match = videoTitle.match(flyoverPattern);
+
+  if (match) {
+    const courseName = match[1].trim();
+    possibilities.push(normalizeName(courseName));
+    // Also add the raw course name without normalization for exact matching
+    possibilities.push(courseName.trim());
+  }
 
   // Try the full normalized title
   possibilities.push(normalizeName(videoTitle));
@@ -92,13 +105,28 @@ function extractCourseName(videoTitle: string): string[] {
 }
 
 /**
+ * Extract designer name from video title
+ */
+function extractDesigner(videoTitle: string): string | null {
+  const flyoverPattern = /Designed by\s+([^-]+)/i;
+  const match = videoTitle.match(flyoverPattern);
+
+  if (match) {
+    return match[1].trim();
+  }
+
+  return null;
+}
+
+/**
  * Find best matching course for a video title
  */
 async function findMatchingCourse(
   videoTitle: string,
-  courses: Array<{ id: string; name: string; location: string | null }>
+  courses: Array<{ id: string; name: string; location: string | null; designer: string | null }>
 ): Promise<{ courseId: string; confidence: number } | null> {
   const possibleNames = extractCourseName(videoTitle);
+  const videoDesigner = extractDesigner(videoTitle);
   let bestMatch: { courseId: string; confidence: number } | null = null;
 
   for (const courseName of possibleNames) {
@@ -115,7 +143,22 @@ async function findMatchingCourse(
         }
       }
 
-      const confidence = Math.min(sim + locationBoost, 1.0);
+      // Check if designer matches (big confidence boost!)
+      let designerBoost = 0;
+      if (videoDesigner && course.designer) {
+        const normalizedVideoDesigner = normalizeName(videoDesigner);
+        const normalizedCourseDesigner = normalizeName(course.designer);
+        const designerSim = similarity(normalizedVideoDesigner, normalizedCourseDesigner);
+
+        // If designer similarity is high, give substantial boost
+        if (designerSim >= 0.8) {
+          designerBoost = 0.3;
+        } else if (designerSim >= 0.6) {
+          designerBoost = 0.15;
+        }
+      }
+
+      const confidence = Math.min(sim + locationBoost + designerBoost, 1.0);
 
       if (!bestMatch || confidence > bestMatch.confidence) {
         bestMatch = { courseId: course.id, confidence };
@@ -123,8 +166,8 @@ async function findMatchingCourse(
     }
   }
 
-  // Only return matches with confidence >= 0.7
-  if (bestMatch && bestMatch.confidence >= 0.7) {
+  // Lower threshold to 0.6 since we have designer matching now
+  if (bestMatch && bestMatch.confidence >= 0.6) {
     return bestMatch;
   }
 
@@ -141,12 +184,13 @@ export async function matchVideosWithCourses(): Promise<{
 }> {
   console.log("Starting video-course matching...");
 
-  // Fetch all courses (we need name and location for matching)
+  // Fetch all courses (we need name, location, and designer for matching)
   const courses = await db.course.findMany({
     select: {
       id: true,
       name: true,
       location: true,
+      designer: true,
     },
   });
 
@@ -171,12 +215,13 @@ export async function matchVideosWithCourses(): Promise<{
     if (match) {
       // Check if this video is already linked to this course
       if (video.courseId !== match.courseId) {
+        const matchedCourse = courses.find((c) => c.id === match.courseId);
         await db.youTubeVideo.update({
           where: { id: video.id },
           data: { courseId: match.courseId },
         });
         console.log(
-          `Matched "${video.title}" -> Course ID ${match.courseId} (confidence: ${match.confidence.toFixed(2)})`
+          `✓ Matched "${video.title}"\n  -> "${matchedCourse?.name}" by ${matchedCourse?.designer || "Unknown"} (confidence: ${(match.confidence * 100).toFixed(0)}%)`
         );
         updated++;
       }
@@ -190,7 +235,7 @@ export async function matchVideosWithCourses(): Promise<{
         });
         updated++;
       }
-      console.log(`No match found for "${video.title}"`);
+      console.log(`✗ No match found for "${video.title}"`);
       unmatched++;
     }
   }
