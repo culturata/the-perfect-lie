@@ -43,6 +43,18 @@ export function Header() {
             Guides
           </Link>
           <Link
+            href="/tutorials"
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+          >
+            Tutorials
+          </Link>
+          <Link
+            href="/setups"
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+          >
+            Setups
+          </Link>
+          <Link
             href="/flyovers"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
           >
@@ -80,6 +92,16 @@ export function Header() {
               <DropdownMenuItem asChild>
                 <Link href="/guides" className="w-full cursor-pointer">
                   Guides
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/tutorials" className="w-full cursor-pointer">
+                  Tutorials
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/setups" className="w-full cursor-pointer">
+                  Setups
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
