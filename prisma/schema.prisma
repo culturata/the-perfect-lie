@@ -289,3 +289,78 @@ enum SyncStatus {
   SUCCESS
   FAILED
 }
+
+model Article {
+  id          String          @id @default(cuid())
+  title       String
+  slug        String          @unique
+  excerpt     String          @db.Text
+  content     String          @db.Text
+  category    ArticleCategory
+  subcategory String?
+
+  // SEO and metadata
+  metaTitle       String?
+  metaDescription String?
+
+  // Article attributes
+  readTime    String? // e.g., "8 min read"
+  featured    Boolean @default(false)
+  published   Boolean @default(false)
+  order       Int     @default(0) // For ordering within category
+
+  // Filters for sidebar navigation
+  budgetTier  BudgetTier?
+  roomType    RoomType?
+  ceilingHeight CeilingHeight?
+  buildStyle  BuildStyle?
+
+  // Related content
+  relatedArticles String[] // Array of article IDs
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  publishedAt DateTime?
+
+  @@index([category])
+  @@index([slug])
+  @@index([published])
+}
+
+enum ArticleCategory {
+  START_HERE
+  LAUNCH_MONITORS
+  PROJECTORS
+  PC_SOFTWARE
+  SCREENS_ENCLOSURES
+  FLOORING_TURF
+  LIGHTING_POWER
+  DIY_BUILDS
+  TUNING_MAINTENANCE
+  EXAMPLE_BUILDS
+}
+
+enum BudgetTier {
+  STARTER
+  MID
+  PREMIUM
+}
+
+enum RoomType {
+  GARAGE
+  BASEMENT
+  SPARE_ROOM
+  SHED
+}
+
+enum CeilingHeight {
+  UNDER_9
+  NINE_TO_TEN
+  OVER_10
+}
+
+enum BuildStyle {
+  DIY
+  HYBRID
+  TURNKEY
+}
