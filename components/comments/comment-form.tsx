@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { MentionTextarea } from "@/components/ui/mention-textarea";
 import { createComment, updateComment } from "@/app/actions/comments";
 import { useAuth } from "@clerk/nextjs";
 
@@ -82,15 +82,15 @@ export function CommentForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <Textarea
+        <MentionTextarea
           value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder={parentId ? "Write a reply..." : "Share your thoughts about this course..."}
+          onChange={setContent}
+          placeholder={parentId ? "Write a reply... (type @ to mention)" : "Share your thoughts about this course... (type @ to mention)"}
           rows={parentId ? 3 : 5}
           maxLength={2000}
         />
         <p className="text-xs text-muted-foreground mt-1">
-          {content.length}/2000 characters
+          {content.length}/2000 characters • Use @ to mention users or courses
         </p>
       </div>
 

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { MentionTextarea } from "@/components/ui/mention-textarea";
 import { Input } from "@/components/ui/input";
 import { StarRating } from "@/components/ui/star-rating";
 import { createReview, updateReview } from "@/app/actions/reviews";
@@ -114,15 +114,15 @@ export function ReviewForm({
         <label className="block text-sm font-medium mb-2">
           Your Review (optional)
         </label>
-        <Textarea
+        <MentionTextarea
           value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Share your thoughts about this course..."
+          onChange={setContent}
+          placeholder="Share your thoughts about this course... (type @ to mention)"
           rows={6}
           maxLength={2000}
         />
         <p className="text-xs text-muted-foreground mt-1">
-          {content.length}/2000 characters
+          {content.length}/2000 characters • Use @ to mention users or courses
         </p>
       </div>
 
