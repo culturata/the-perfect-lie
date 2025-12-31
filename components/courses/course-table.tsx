@@ -215,21 +215,23 @@ export function CourseTable({ courses }: CourseTableProps) {
 
   return (
     <div className="space-y-4">
-      {/* Filters */}
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-col md:flex-row gap-3">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search courses, designers, locations, server, version..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
+      {/* Filters - Single Line */}
+      <div className="flex flex-col lg:flex-row gap-3 items-start lg:items-center">
+        {/* Search Box - Smaller Width */}
+        <div className="relative w-full lg:max-w-md">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search courses, designers, locations, server, version..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
 
+        {/* Filters Row */}
+        <div className="flex flex-wrap gap-2 items-center">
           <Select value={designerFilter} onValueChange={setDesignerFilter}>
-            <SelectTrigger className="w-full md:w-[200px]">
+            <SelectTrigger className="w-[180px]">
               <Filter className="mr-2 h-4 w-4" />
               <SelectValue placeholder="Designer" />
             </SelectTrigger>
@@ -244,7 +246,7 @@ export function CourseTable({ courses }: CourseTableProps) {
           </Select>
 
           <Select value={serverFilter} onValueChange={setServerFilter}>
-            <SelectTrigger className="w-full md:w-[180px]">
+            <SelectTrigger className="w-[160px]">
               <Filter className="mr-2 h-4 w-4" />
               <SelectValue placeholder="Server" />
             </SelectTrigger>
@@ -261,7 +263,7 @@ export function CourseTable({ courses }: CourseTableProps) {
           {/* Column Customizer */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="w-full md:w-auto">
+              <Button variant="outline">
                 <Settings2 className="mr-2 h-4 w-4" />
                 Columns
               </Button>
@@ -281,31 +283,28 @@ export function CourseTable({ courses }: CourseTableProps) {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
 
-        {/* Beta toggle and results count */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="hide-beta"
-                checked={hideBeta}
-                onCheckedChange={(checked) => setHideBeta(checked === true)}
-              />
-              <label
-                htmlFor="hide-beta"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer select-none"
-              >
-                {hideBeta ? <EyeOff className="inline h-4 w-4 mr-1" /> : <Eye className="inline h-4 w-4 mr-1" />}
-                Hide Beta Courses
-                <Badge variant="secondary" className="ml-2">
-                  {betaCount}
-                </Badge>
-              </label>
-            </div>
+          {/* Beta Toggle */}
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="hide-beta"
+              checked={hideBeta}
+              onCheckedChange={(checked) => setHideBeta(checked === true)}
+            />
+            <label
+              htmlFor="hide-beta"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer select-none whitespace-nowrap"
+            >
+              {hideBeta ? <EyeOff className="inline h-4 w-4 mr-1" /> : <Eye className="inline h-4 w-4 mr-1" />}
+              Hide Beta
+              <Badge variant="secondary" className="ml-1">
+                {betaCount}
+              </Badge>
+            </label>
           </div>
 
-          <div className="text-sm text-muted-foreground">
+          {/* Results Count */}
+          <div className="text-sm text-muted-foreground whitespace-nowrap">
             Showing {filteredAndSortedCourses.length} of {courses.length} courses
           </div>
         </div>
