@@ -15,6 +15,7 @@ import { LeaderboardAd, MobileBannerAd, MediumRectangleAd } from "@/components/a
 import { NewsletterWidget } from "@/components/newsletter/newsletter-widget";
 import { getCurrentUserSubscription } from "@/app/actions/newsletter";
 import { Button } from "@/components/ui/button";
+import { AddToCollectionButton } from "@/components/collections/add-to-collection-button";
 
 export const dynamic = "force-dynamic";
 
@@ -227,6 +228,9 @@ export default async function CoursePage({ params }: CoursePageProps) {
                   <span>Updated {updateDate}</span>
                 </div>
                 <Badge variant="secondary">GSPro Compatible</Badge>
+              </div>
+              <div className="pt-2">
+                <AddToCollectionButton itemType="COURSE" courseId={course.id} />
               </div>
             </div>
           </div>
