@@ -193,7 +193,6 @@ export function ArticleForm({ article }: ArticleFormProps) {
                   <SelectValue placeholder="None" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
                   {Object.entries(budgetTierLabels).map(([value, label]) => (
                     <SelectItem key={value} value={value}>
                       {label}
@@ -210,7 +209,6 @@ export function ArticleForm({ article }: ArticleFormProps) {
                   <SelectValue placeholder="None" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
                   {Object.entries(roomTypeLabels).map(([value, label]) => (
                     <SelectItem key={value} value={value}>
                       {label}
@@ -227,7 +225,6 @@ export function ArticleForm({ article }: ArticleFormProps) {
                   <SelectValue placeholder="None" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
                   {Object.entries(ceilingHeightLabels).map(([value, label]) => (
                     <SelectItem key={value} value={value}>
                       {label}
@@ -244,7 +241,6 @@ export function ArticleForm({ article }: ArticleFormProps) {
                   <SelectValue placeholder="None" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
                   {Object.entries(buildStyleLabels).map(([value, label]) => (
                     <SelectItem key={value} value={value}>
                       {label}
